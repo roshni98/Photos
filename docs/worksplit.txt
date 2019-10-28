@@ -1,0 +1,11 @@
+Photos work split - Roshni Shah (rys17) and Amulya Mummaneni (asm229)
+
+Roshni Shah
+-Login
+-Photo editor
+-album list
+
+Amulya Mummaneni
+-Search
+-admin
+-single album view
