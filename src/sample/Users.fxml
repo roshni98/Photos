@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+        <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+          <font>
+            <Font size="18.0" />
+          </font>
+        </Label>
+            <Button layoutX="89.0" layoutY="305.0" mnemonicParsing="false" text="Create" />
+            <Button layoutX="484.0" layoutY="306.0" mnemonicParsing="false" text="Delete" />
+            <Button layoutX="183.0" layoutY="306.0" mnemonicParsing="false" text="Rename" />
+            <TableView layoutY="86.0" prefHeight="176.0" prefWidth="640.0">
+              <columns>
+                <TableColumn prefWidth="136.0" text="Names" />
+                <TableColumn prefWidth="144.0" text="Number of Photos" />
+              </columns>
+            </TableView>
+            <Text layoutX="280.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Albums">
+               <font>
+                  <Font size="29.0" />
+               </font>
+            </Text>
+            <Button layoutX="289.0" layoutY="306.0" mnemonicParsing="false" text="Open" />
+            <Button layoutX="382.0" layoutY="306.0" mnemonicParsing="false" text="Search" />
+            <Text layoutX="513.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Logged In: User" />
+            <TextField layoutX="248.0" layoutY="51.0" promptText="Search" />
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
