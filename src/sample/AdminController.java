@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import sample.Main;
-
 public class AdminController {
 
     @FXML
@@ -130,7 +128,7 @@ public class AdminController {
     }
 
     @FXML
-    public void handleLogoutButton(){ // TODO implement
+    public void handleLogoutButton(){
         // current user is no longer admin
         // redirect to login page
         try {
