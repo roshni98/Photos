@@ -14,11 +14,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("login.fxml"));
+        loader.setLocation(getClass().getResource("albumList.fxml"));
 
         VBox root = (VBox) loader.load();
 
-        LoginController controller = loader.getController();
+        AlbumListController controller = loader.getController();
 
         controller.start(primaryStage);
 
