@@ -6,7 +6,4 @@ import javafx.scene.control.Button;
 public class AlbumListController {
     @FXML
     Button logout;
-
-    @FXML
-    Button
 }
