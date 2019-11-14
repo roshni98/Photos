@@ -18,7 +18,7 @@ public class Main extends Application {
 
         VBox root = (VBox) loader.load();
 
-        AdminController controller = loader.getController();
+        AlbumListController controller = loader.getController();
 
         controller.start(primaryStage);
 

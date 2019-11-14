@@ -31,7 +31,7 @@ public class LoginController {
     Button loginButton;
 
     public void start(Stage primaryStage){
-        objList = FXCollections.observableArrayList();
+       // objList = FXCollections.observableArrayList();
 
     }
     /**
