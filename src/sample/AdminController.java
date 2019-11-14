@@ -3,7 +3,12 @@ package sample;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
@@ -15,7 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import sample.Main;
+
 public class AdminController {
+
+    @FXML
+    AnchorPane rootPane;
 
     @FXML
     ListView<String> listView;
@@ -123,6 +133,12 @@ public class AdminController {
     public void handleLogoutButton(){ // TODO implement
         // current user is no longer admin
         // redirect to login page
+        try {
+            VBox pane = FXMLLoader.load(getClass().getResource("login.fxml"));
+            rootPane.getChildren().setAll(pane);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML

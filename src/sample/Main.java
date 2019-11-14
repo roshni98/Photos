@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -18,10 +19,11 @@ public class Main extends Application {
         VBox root = (VBox) loader.load();
 
         LoginController controller = loader.getController();
+
         controller.start(primaryStage);
 
         primaryStage.setTitle("Photos");
-        primaryStage.setScene(new Scene(root, 600, 275));
+        primaryStage.setScene(new Scene(root, 650, 400));
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(event -> {
