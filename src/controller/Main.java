@@ -1,10 +1,8 @@
-package sample;
+package controller;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -14,11 +12,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("admin.fxml"));
+        loader.setLocation(getClass().getResource("login.fxml"));
 
         VBox root = (VBox) loader.load();
 
-        AdminController controller = loader.getController();
+        LoginController controller = loader.getController();
 
         controller.start(primaryStage);
 
@@ -30,6 +28,7 @@ public class Main extends Application {
             // Update file
             //controller.stop();
         });
+
     }
 
 
