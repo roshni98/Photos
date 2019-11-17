@@ -86,7 +86,7 @@ public class AlbumController {
     @FXML
     public void handleAlbumListButton(){
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("albumList.fxml"));
+            VBox pane = FXMLLoader.load(getClass().getResource("../view/albumList.fxml"));
             rootPane.getChildren().setAll(pane);
         }catch(Exception e){
             e.printStackTrace();
@@ -99,7 +99,7 @@ public class AlbumController {
     @FXML
     public void handleLogoutButton(){
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("login.fxml"));
+            VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
             rootPane.getChildren().setAll(pane);
         }catch(Exception e){
             e.printStackTrace();

@@ -7,13 +7,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditPhotoController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="124.0" layoutY="117.0" pickOnBounds="true" preserveRatio="true" />
-            <Button layoutX="97.0" layoutY="313.0" mnemonicParsing="false" text="Previous" />
-            <Button layoutX="259.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="51.0" text="Next" />
+            <Button fx:id="previousButton" layoutX="97.0" layoutY="313.0" mnemonicParsing="false" text="Previous" />
+            <Button fx:id="nextButton" layoutX="259.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="51.0" text="Next" />
             <Button layoutX="477.0" layoutY="46.0" mnemonicParsing="false" text="Logout" />
             <TextField layoutX="414.0" layoutY="126.0" />
             <TextField layoutX="414.0" layoutY="231.0" />
