@@ -2,11 +2,8 @@ package controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -17,19 +14,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Album;
 import model.Photo;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -131,7 +124,7 @@ public class AlbumListController {
     @FXML
     public void handleLogout(){ //directs to login page
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("login.fxml"));
+            VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
             rootPane.getChildren().setAll(pane);
         }catch(Exception e){
             e.printStackTrace();
@@ -141,7 +134,7 @@ public class AlbumListController {
     @FXML
     public void handleSearchButton(){ //directs to search page
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("search.fxml"));
+            VBox pane = FXMLLoader.load(getClass().getResource("../view/search.fxml"));
             rootPane.getChildren().setAll(pane);
         }catch(Exception e){
             e.printStackTrace();

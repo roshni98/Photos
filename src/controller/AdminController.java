@@ -130,7 +130,7 @@ public class AdminController {
         // current user is no longer admin
         // redirect to login page
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("login.fxml"));
+            VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
             rootPane.getChildren().setAll(pane);
         }catch(Exception e){
             e.printStackTrace();
