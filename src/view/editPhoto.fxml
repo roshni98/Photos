@@ -6,22 +6,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import controller.EditPhotoController?>
 
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditPhotoController">
   <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <AnchorPane fx:id="rootPane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="124.0" layoutY="117.0" pickOnBounds="true" preserveRatio="true" />
-            <Button fx:id="previousButton" layoutX="97.0" layoutY="313.0" mnemonicParsing="false" text="Previous" />
-            <Button fx:id="nextButton" layoutX="259.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="51.0" text="Next" />
-            <Button layoutX="477.0" layoutY="46.0" mnemonicParsing="false" text="Logout" />
-            <TextField layoutX="414.0" layoutY="126.0" />
-            <TextField layoutX="414.0" layoutY="231.0" />
-            <TextField layoutX="414.0" layoutY="179.0" />
-            <Text layoutX="415.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tag" />
-            <Text layoutX="414.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location" />
-            <Text layoutX="415.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
-            <Button layoutX="70.0" layoutY="46.0" mnemonicParsing="false" text="Album List" />
+            <Button fx:id="previousButton" layoutX="97.0" layoutY="313.0" mnemonicParsing="false" onAction="#handlePrevButton" text="Previous" />
+            <Button fx:id="nextButton" layoutX="259.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleNextButton" prefHeight="27.0" prefWidth="51.0" text="Next" />
+            <Button fx:id="logoutButton" layoutX="477.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleLogoutButton" text="Logout" />
+            <TextField fx:id="dateField" layoutX="414.0" layoutY="126.0" />
+            <TextField fx:id="locationField" layoutX="414.0" layoutY="231.0" />
+            <TextField fx:id="tagField" layoutX="414.0" layoutY="179.0" />
+            <Text fx:id="tagText" layoutX="415.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tag" />
+            <Text fx:id="locationText" layoutX="414.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location" />
+            <Text fx:id="dateText" layoutX="415.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
+            <Button  fx:id="albumListButton" layoutX="70.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleAlbumListButton" text="Album List" />
          </children>
     </AnchorPane>
   </children>
