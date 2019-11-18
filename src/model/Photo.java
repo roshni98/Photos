@@ -10,30 +10,31 @@ import java.text.SimpleDateFormat;
 
 
 public class Photo implements Serializable{
-    String label;
+    ArrayList<String> tags;
+    String caption;
     Date date;
     String picPath;
 
     public Photo(String c, String p, Date d){
-        label = c;
+        caption = c;
         picPath = p;
         date = d;
     }
 
     public Photo(String c, String p, Date d, HashMap t){
-        label = c;
+        caption = c;
         picPath = p;
         date = d;
     }
 
 
     public String getCaption(){
-        return label;
+        return caption;
     }
 
 
     public boolean setlabel(String c){
-        label = c;
+        caption = c;
         return false;
     }
 

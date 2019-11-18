@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("login.fxml"));
+        loader.setLocation(getClass().getResource("../view/login.fxml"));
 
         VBox root = (VBox) loader.load();
 

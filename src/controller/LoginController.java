@@ -38,7 +38,7 @@ public class LoginController {
 
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("albumList.fxml"));
+        loader.setLocation(getClass().getResource("../view/albumList.fxml"));
 
         VBox root = (VBox) loader.load();
 
