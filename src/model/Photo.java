@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 
 
 public class Photo implements Serializable{
@@ -14,6 +12,7 @@ public class Photo implements Serializable{
     String caption;
     Date date;
     String picPath;
+    private String location = "";
 
     public Photo(String c, String p, Date d){
         caption = c;
@@ -30,6 +29,11 @@ public class Photo implements Serializable{
 
     public String getCaption(){
         return caption;
+    }
+
+    public void setCaption(String a) {
+
+        this.caption = a;
     }
 
 
@@ -49,19 +53,33 @@ public class Photo implements Serializable{
     }
 
 
-    public Date getDate(){
-        return date;
+    public String getDate(){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int year = cal.get(Calendar.YEAR);
+        return month + "/" + day + "/" + year;
+
     }
 
 
     public void setDate(Date d){
         date = d;
     }
+    public void setPhotoLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLocation() {
+
+        return location;
+    }
+
 
     public String toString(){
         return picPath;
     }
-
 
 
 }

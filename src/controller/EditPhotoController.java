@@ -6,6 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import model.Photo;
+
+import java.util.Calendar;
 
 
 public class EditPhotoController {
@@ -40,6 +43,12 @@ public class EditPhotoController {
 
     @FXML
     public void handleNextButton(){
+//        int i = Photo.getName.getPhotos().indexOf(Photo.currentPhoto);
+//        if (i == Photo.getName.getPhotos().size() - 1) {
+//            Photos.currentPhoto = Photo.currentAlbum.getPhotos().get(0);
+//        } else {
+//            Photo.currentPhoto = Photo.currentAlbum.getPhotos().get(i + 1);
+//        }
 
     }
 
@@ -62,5 +71,6 @@ public class EditPhotoController {
             e.printStackTrace();
         }
     }
+
 }
 
