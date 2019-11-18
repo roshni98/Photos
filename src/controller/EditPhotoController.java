@@ -89,5 +89,11 @@ public class EditPhotoController {
 
     public void start(Stage primaryStage) {
     }
+
+    private void showTextFields(Stage primaryStage){
+
+
+    }
+
 }
 

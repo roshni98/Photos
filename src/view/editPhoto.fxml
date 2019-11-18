@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
@@ -14,26 +11,15 @@
   <children>
     <AnchorPane fx:id="rootPane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="124.0" layoutY="96.0" pickOnBounds="true" preserveRatio="true" />
-            <Button fx:id="previousButton" layoutX="92.0" layoutY="333.0" mnemonicParsing="false" onAction="#handlePrevButton" text="Previous" />
-            <Button fx:id="nextButton" layoutX="273.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleNextButton" prefHeight="27.0" prefWidth="51.0" text="Next" />
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="100.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true" />
+            <Button fx:id="previousButton" layoutX="74.0" layoutY="333.0" mnemonicParsing="false" onAction="#handlePrevButton" text="Previous" />
+            <Button fx:id="nextButton" layoutX="275.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleNextButton" prefHeight="27.0" prefWidth="51.0" text="Next" />
             <Button fx:id="logoutButton" layoutX="477.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleLogoutButton" text="Logout" />
-            <TextField fx:id="dateField" layoutX="414.0" layoutY="126.0" />
-            <TextField fx:id="tagField" layoutX="414.0" layoutY="179.0" />
-            <Text fx:id="tagText" layoutX="415.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tag" />
-            <Text fx:id="locationText" layoutX="414.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location" />
-            <Text fx:id="dateText" layoutX="415.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
-            <Button fx:id="albumListButton" layoutX="70.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleAlbumListButton" text="Album List" />
-            <Text fx:id="captionText" layoutX="197.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Caption" />
-            <TextArea fx:id="captionArea" layoutX="152.0" layoutY="279.0" prefHeight="38.0" prefWidth="132.0" />
-            <TableView fx:id="tagTable" layoutX="420.0" layoutY="236.0" prefHeight="150.0" prefWidth="149.0">
-              <columns>
-                <TableColumn fx:id="tagNameCol" prefWidth="75.0" text="Tag Name" />
-                <TableColumn fx:id="tagValueCol" prefWidth="75.0" text="Value" />
-              </columns>
-            </TableView>
-            <Button fx:id="saveDate" layoutX="580.0" layoutY="126.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="47.0" text="Save" />
-            <Button fx:id="saveLocation" layoutX="580.0" layoutY="179.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="47.0" text="Save" />
+            <Text fx:id="tagText" layoutX="404.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" />
+            <Text fx:id="dateText" layoutX="402.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
+            <Button fx:id="albumListButton" layoutX="52.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleAlbumListButton" text="Back to Album" />
+            <Text fx:id="captionText" layoutX="402.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Caption" />
+            <ListView layoutX="404.0" layoutY="232.0" prefHeight="144.0" prefWidth="161.0" />
          </children>
     </AnchorPane>
   </children>
