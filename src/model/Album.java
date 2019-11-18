@@ -8,64 +8,57 @@ import java.text.SimpleDateFormat;
 
 public class Album implements Serializable {
 
-    String name;
+    String user;
+    String albumName;
     ArrayList<Photo> pics;
-
-    Date max_date;
-
     Date min_date;
+    Date max_date;
 
     private boolean dateSet;
 
-
-    public Album(String n) {
-        name = n;
-        pics = new ArrayList<Photo>();
-        max_date = new Date(Long.MIN_VALUE);
-        min_date = new Date(Long.MAX_VALUE);
-        dateSet = false;
+    public Album(String user, String n) {
+        this.user = user;
+        this.albumName = n;
+        this.pics = new ArrayList<Photo>();
     }
 
 
-    public String getName() {
-        return name;
+    public String getAlbumName() {
+        return albumName;
+
     }
 
     public void setName(String n) {
         //make sure no other album has same name
-        name = n;
+        this.albumName = n;
     }
 
-    public boolean addPic(Photo p) {
+    public void addPic(Photo p) {
         pics.add(p);
         if (!dateSet) {
-            max_date = p.date;
-            min_date = p.date;
-            dateSet = true;
+            this.max_date = p.date;
+            this.min_date = p.date;
+            this.dateSet = true;
         } else {
-            if (max_date.before(p.date)) {
-                max_date = p.date;
-            } else if (min_date.after(p.date)) {
-                min_date = p.date;
+            if (this.max_date.before(p.date)) {
+                this.max_date = p.date;
+            } else if (this.min_date.after(p.date)) {
+                this.min_date = p.date;
             }
         }
-        return false;
     }
 
     public void removePic(Photo p) {
         pics.remove(p);
     }
 
-
     public ArrayList<Photo> getPics() {
         return pics;
     }
 
-
     public String toString() {
-        return getName();
+        return getAlbumName();
     }
-
 
     public Photo getThumbnail() {
         if (this.pics.size() <= 0) {

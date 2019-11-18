@@ -41,6 +41,7 @@ public class AlbumController {
     ListView<String> tagList;
 
     public void start(Stage primaryStage){
+        // add images to grid pane
 
     }
 
