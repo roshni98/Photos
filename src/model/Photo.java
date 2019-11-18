@@ -77,9 +77,9 @@ public class Photo implements Serializable{
     }
 
 
-    public String toString(){
-        return picPath;
-    }
+//    public String toString(){
+//        return picPath;
+//    }
 
 
 }
