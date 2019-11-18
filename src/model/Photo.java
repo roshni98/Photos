@@ -8,10 +8,12 @@ public class Photo implements Serializable{
     HashMap<String, ArrayList<String>> tags;
     String caption;
     Date date;
+    String path;
 
-    public Photo(String c, Date d){
-        caption = c;
-        date = d;
+    public Photo(String c, Date d, String path){
+        this.caption = c;
+        this.date = d;
+        this.path = path;
     }
 
     public Photo(String c, String p, Date d, HashMap t){

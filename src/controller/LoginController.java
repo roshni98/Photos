@@ -80,20 +80,21 @@ public class LoginController {
                 String user = (String) currentAccount.get("User");
 
                 if(user.equals(userInfo)){
-                    //redirect
+                    //redirect to album list
                     //handleDialog(Alert.AlertType.CONFIRMATION, "User exist!", "Confirmation");
 
+                    // TODO pass user to controller (to load correct albums)
+                    loader.setLocation(getClass().getResource("albumList.fxml"));
+                    root = (Parent) loader.load();
+                    AlbumListController albumListController = loader.getController();
+                    albumListController.init(new ArrayList<Album>());
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
                 }
             }
-            loader.setLocation(getClass().getResource("albumList.fxml"));
-            root = (Parent) loader.load();
-            AlbumListController albumListController = loader.getController();
-            albumListController.init(new ArrayList<Album>());
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-//            handleDialog(Alert.AlertType.ERROR, "User does not exist! Please try again!", "Error");
 
+            handleDialog(Alert.AlertType.ERROR, "User does not exist! Please try again!", "Error");
 
         }catch(FileNotFoundException e){
             e.printStackTrace();

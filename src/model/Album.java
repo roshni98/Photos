@@ -10,7 +10,7 @@ public class Album implements Serializable {
 
     String user;
     String albumName;
-    ArrayList<Photo> pics;
+    ArrayList<String> pics;
     Date min_date;
     Date max_date;
 
@@ -19,7 +19,7 @@ public class Album implements Serializable {
     public Album(String user, String n) {
         this.user = user;
         this.albumName = n;
-        this.pics = new ArrayList<Photo>();
+        this.pics = new ArrayList<String>();
     }
 
 
@@ -34,7 +34,7 @@ public class Album implements Serializable {
     }
 
     public void addPic(Photo p) {
-        pics.add(p);
+        pics.add(p.path);
         if (!dateSet) {
             this.max_date = p.date;
             this.min_date = p.date;
@@ -52,7 +52,7 @@ public class Album implements Serializable {
         pics.remove(p);
     }
 
-    public ArrayList<Photo> getPics() {
+    public ArrayList<String> getPics() {
         return pics;
     }
 
@@ -60,11 +60,11 @@ public class Album implements Serializable {
         return getAlbumName();
     }
 
-    public Photo getThumbnail() {
+    /*public Photo getThumbnail() {
         if (this.pics.size() <= 0) {
             return null;
         } else {
             return this.pics.get(0);
         }
-    }
+    }*/
 }
