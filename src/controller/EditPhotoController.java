@@ -3,9 +3,12 @@ package controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import model.Photo;
 
 import java.util.Calendar;
@@ -25,13 +28,25 @@ public class EditPhotoController {
     Button albumListButton;
 
     @FXML
+    Button saveDate;
+
+    @FXML
+    Button saveLocation;
+
+    @FXML
     TextField dateField;
 
     @FXML
-    TextField locationField;
+    TextField tagField;
 
     @FXML
-    TextField tagField;
+    TableView <String> tagTable;
+
+    @FXML
+    TableColumn <String, String>tagNameCol;
+
+    @FXML
+    TableColumn <String, String>tagValueCol;
 
     @FXML
     AnchorPane rootPane;
@@ -45,7 +60,7 @@ public class EditPhotoController {
     public void handleNextButton(){
 //        int i = Photo.getName.getPhotos().indexOf(Photo.currentPhoto);
 //        if (i == Photo.getName.getPhotos().size() - 1) {
-//            Photos.currentPhoto = Photo.currentAlbum.getPhotos().get(0);
+//            Photo.currentPhoto = Photo.currentAlbum.getPhotos().get(0);
 //        } else {
 //            Photo.currentPhoto = Photo.currentAlbum.getPhotos().get(i + 1);
 //        }
@@ -70,6 +85,14 @@ public class EditPhotoController {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void start(Stage primaryStage) {
+    }
+
+    private void showTextFields(Stage primaryStage){
+
+
     }
 
 }
