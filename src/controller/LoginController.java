@@ -107,10 +107,11 @@ public class LoginController {
                     root = (Parent) loader.load();
                     AlbumListController albumListController = loader.getController();
                     // TODO pass user's list of albums
-                    albumListController.init(new ArrayList<Album>());
+                    albumListController.init();
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
                     stage.show();
+                    return;
                 }
             }
 
