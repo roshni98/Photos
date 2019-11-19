@@ -60,13 +60,20 @@ public class AlbumListController {
     // allow's us to pass albums object from previous page
     public void init(User u) {
         this.user = u;
-        albums = u.getAlbumList();
+        this.albums = u.getAlbumList();
         obsList = FXCollections.observableArrayList(u.getAlbumList());
         displayAlbumTile.setPrefColumns(4);
         scroller.setFitToHeight(true);
         scroller.setFitToWidth(true);
         scroller.setContent(displayAlbumTile);
         updateTilePane();
+    }
+
+    public void start(Stage primaryStage){
+        //VBox box = new VBox();
+        // load existing albums
+        // initialize list of albums (to maintain in memory)
+        primaryStage.setTitle("Album List");
     }
 
     //load's folder icon
@@ -198,6 +205,7 @@ public class AlbumListController {
             updateUserList();
             // passing user object in init
             albumController.init(this.user, albumName);
+            albumController.start(stage);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -284,13 +292,4 @@ public class AlbumListController {
             addToTilePane(result.get());
         }
     }
-
-    public void start(Stage primaryStage){
-        //VBox box = new VBox();
-        // load existing albums
-        // initialize list of albums (to maintain in memory)
-        primaryStage.setTitle("Album List");
-    }
-
-
 }

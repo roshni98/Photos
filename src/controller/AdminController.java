@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -144,9 +146,22 @@ public class AdminController {
     public void handleLogoutButton(){
         // current user is no longer admin
         // redirect to login page
+        Parent root;
+        Stage stage;
+        FXMLLoader loader = new FXMLLoader();
+
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
-            rootPane.getChildren().setAll(pane);
+            //VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
+           // rootPane.getChildren().setAll(pane);
+            stage = (Stage) logoutButton.getScene().getWindow();
+            loader.setLocation(getClass().getResource("../view/login.fxml"));
+            root = (Parent) loader.load();
+            LoginController loginController = loader.getController();
+            loginController.start(stage);
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return;
         }catch(Exception e){
             e.printStackTrace();
         }

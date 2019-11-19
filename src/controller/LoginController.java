@@ -1,3 +1,7 @@
+/**
+ * @author Roshni Shah
+ * */
+
 package controller;
 
 import javafx.collections.ObservableList;
@@ -26,48 +30,45 @@ import java.util.List;
 import java.util.Optional;
 
 public class LoginController {
-    private ObservableList<String> objList;
+
+    /**
+     * Textfield to enter username
+     * */
     @FXML
     TextField usernameField;
 
+    /**
+     * Login button
+     * */
     @FXML
     Button loginButton;
 
+    /**
+     * Main UI panel
+     * */
     @FXML
     AnchorPane rootPane;
 
-    List<String> users;
+    /**
+     * List of all user objects saved in application
+     * */
+    private List<User> userObjectList;
 
-    List<User> userObjectList;
-
-
+    /**
+     * Start method to set up login UI and data structures
+     * */
     public void start(Stage primaryStage) throws IOException {
-        // objList = FXCollections.observableArrayList();
 
-        users = new ArrayList<String>();
         userObjectList = new ArrayList<>();
-       /* FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("../view/albumList.fxml"));
-
-        VBox root = (VBox) loader.load();
-
-        AlbumListController controller = loader.getController();
-        controller.init(new ArrayList<Album>());
-        controller.start(primaryStage);
-
-        primaryStage.setTitle("Photos");
-        primaryStage.setScene(new Scene(root, 650, 400));
-        primaryStage.show();*/
-
-        primaryStage.setOnCloseRequest(event -> {
-            // Update file
-
-//            this.stop();
-        });
+        /*primaryStage.setOnCloseRequest(event -> {
+            this.stop();
+        });*/
     }
 
     /**
-     * Handle login when user submits username
+     * Handle login when user submits username.
+     * Redirects to album list if non-admin user.
+     * Redirects to admin panel if admin.
      */
     public void handleLoginButton() throws IOException {
         if(userObjectList == null){
@@ -92,7 +93,6 @@ public class LoginController {
                 return;
             }
 
-            stage = (Stage) loginButton.getScene().getWindow();
             File fil = new File("data.json"); //path of json
             if (fil.length() == 0) return; //file empty, don't load anything
             FileReader fr = new FileReader(fil);
@@ -100,8 +100,8 @@ public class LoginController {
             JSONArray jsonArray = (JSONArray) obj;
             Iterator<JSONObject> iterator = jsonArray.iterator();
 
-            while (iterator.hasNext()) {
-                JSONObject currentAccount = iterator.next(); // looking through current user
+            while (iterator.hasNext()) { // looking through users
+                JSONObject currentAccount = iterator.next(); // current user
                 String user = (String) currentAccount.get("User");
                 createLoadUser(user);
 
@@ -112,7 +112,7 @@ public class LoginController {
                             userObject = userObjectList.get(i);
                         }
                     }
-                    // TODO pass user to controller (to load correct albums)
+
                     loader.setLocation(getClass().getResource("./../view/albumList.fxml"));
                     root = (Parent) loader.load();
                     AlbumListController albumListController = loader.getController();
@@ -137,14 +137,9 @@ public class LoginController {
         }
     }
 
-    @FXML
-    public Optional<ButtonType> handleDialog(Alert.AlertType alertType, String contextText, String title) {
-        Alert errorAlert = new Alert(alertType);
-        errorAlert.setContentText(contextText);
-        errorAlert.setTitle(title);
-        return errorAlert.showAndWait();
-    }
-
+    /**
+     * Creates file for user's serialized information (albums and photos)
+     * */
     private void createLoadUser(String username) {
         try {
             File file = new File(username+".txt");
@@ -172,6 +167,20 @@ public class LoginController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Generalized method for creating dialog boxes.
+     * @param alertType type of alert (e.g. error, warning, etc)
+     * @param  contextText Message to be displayed in dialog
+     * @param title Title of dialog box
+     * */
+    @FXML
+    public Optional<ButtonType> handleDialog(Alert.AlertType alertType, String contextText, String title) {
+        Alert errorAlert = new Alert(alertType);
+        errorAlert.setContentText(contextText);
+        errorAlert.setTitle(title);
+        return errorAlert.showAndWait();
     }
 }
 
