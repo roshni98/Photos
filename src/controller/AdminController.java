@@ -11,10 +11,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +62,21 @@ public class AdminController {
 
         accounts = new ArrayList<String>();
         obsList = FXCollections.observableArrayList();
+
+        loadAccounts();
+        listView.setItems(obsList);
+
+        // select the first item
+        if(obsList.size() > 0){
+            listView.getSelectionModel().select(0);
+        }else{
+            deleteButton.setVisible(false);
+        }
+
+        primaryStage.setOnCloseRequest(event -> {
+            // Update file
+            this.stop();
+        });
     }
 
     public void stop(){
@@ -111,8 +128,6 @@ public class AdminController {
             resetUI();
 
             if(accounts.size() == 0){ // if list is empty
-                // disable delete button?
-                // TODO make sure its visible when you add user to list
                 deleteButton.setVisible(false);
             }
 
@@ -210,4 +225,30 @@ public class AdminController {
         return false;
     }
 
+    public void loadAccounts() {
+        JSONParser parser = new JSONParser();
+
+        try {
+            File f = new File("data.json");
+            if (f.length() == 0) return; // if file is empty, don't load anything
+            FileReader fr = new FileReader(f);
+            Object obj = parser.parse(fr);
+            JSONArray jsonArray = (JSONArray) obj;
+            Iterator<JSONObject> iterator = jsonArray.iterator();
+            while (iterator.hasNext()) {
+                JSONObject currAcct = iterator.next();
+                String name = (String) currAcct.get("User");
+                accounts.add(name);
+            }
+
+            // populate observable list
+            buildObsList();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

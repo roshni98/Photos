@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.Album;
 
 public class Main extends Application {
 
@@ -18,6 +19,8 @@ public class Main extends Application {
 
         LoginController controller = loader.getController();
 
+        //Album album = new Album("user", "Album 1");
+        //album.getPics().add("ladygaga.jpeg");
         controller.start(primaryStage);
 
         primaryStage.setTitle("Photos");

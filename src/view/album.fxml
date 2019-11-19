@@ -2,14 +2,18 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AlbumController">
   <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <AnchorPane fx:id="rootPane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="NEVER">
       <children>
             <Button fx:id="albumListButton" layoutX="30.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleAlbumListButton" text="Album List" />
             <Button fx:id="logoutButton" layoutX="523.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleLogoutButton" text="Logout" />
@@ -25,11 +29,30 @@
             <ListView fx:id="tagList" layoutX="30.0" layoutY="281.0" prefHeight="74.0" prefWidth="385.0" />
             <Button fx:id="addTagButton" layoutX="442.0" layoutY="281.0" mnemonicParsing="false" onAction="#handleAddTagButton" prefHeight="27.0" prefWidth="78.0" text="Add Tag" />
             <Button fx:id="deleteTagButton" layoutX="442.0" layoutY="318.0" mnemonicParsing="false" onAction="#handleDeleteTagButton" text="Delete Tag" />
-            <Text layoutX="254.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album Name">
+            <Text fx:id="albumNameText" layoutX="254.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album Name">
                <font>
                   <Font size="21.0" />
                </font>
             </Text>
+            <GridPane fx:id="gridPane" hgap="10.0" layoutX="33.0" layoutY="83.0" prefHeight="146.0" prefWidth="451.0" vgap="10.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0" prefWidth="94.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="127.0" minWidth="10.0" prefWidth="102.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="96.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="99.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="92.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="59.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="64.0" minHeight="10.0" prefHeight="64.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ImageView fitHeight="59.0" fitWidth="86.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fitHeight="57.0" fitWidth="87.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+                  <ImageView fitHeight="64.0" fitWidth="82.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+                  <ImageView fitHeight="60.0" fitWidth="87.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" />
+               </children>
+            </GridPane>
       </children>
     </AnchorPane>
   </children>

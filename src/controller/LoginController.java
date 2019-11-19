@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Album;
@@ -17,12 +18,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 public class LoginController {
@@ -33,11 +32,17 @@ public class LoginController {
     @FXML
     Button loginButton;
 
+    @FXML
+    AnchorPane rootPane;
+
+    List<String> users;
+
     public void start(Stage primaryStage) throws IOException {
        // objList = FXCollections.observableArrayList();
 
+        users = new ArrayList<String>();
 
-        FXMLLoader loader = new FXMLLoader();
+       /* FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("../view/albumList.fxml"));
 
         VBox root = (VBox) loader.load();
@@ -48,18 +53,19 @@ public class LoginController {
 
         primaryStage.setTitle("Photos");
         primaryStage.setScene(new Scene(root, 650, 400));
-        primaryStage.show();
+        primaryStage.show();*/
 
         primaryStage.setOnCloseRequest(event -> {
             // Update file
-            //controller.stop();
-        });
 
+//            this.stop();
+        });
     }
+
     /**
      * Handle login when user submits username
      * */
-    public void handleLoginButton(){
+    public void handleLoginButton() throws IOException {
         Parent root;
         Stage stage;
         String userInfo = usernameField.getText(); //holds text entered
@@ -67,6 +73,18 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader();
 
         try{
+            stage = (Stage) loginButton.getScene().getWindow();
+            if(userInfo.equals("admin")){
+                loader.setLocation(getClass().getResource("../view/admin.fxml"));
+                root = (Parent) loader.load();
+                AdminController adminController = loader.getController();
+                adminController.start(stage);
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+                return;
+            }
+
             stage = (Stage) loginButton.getScene().getWindow();
             File fil = new File("data.json"); //path of json
             if(fil.length() == 0)return; //file empty, don't load anything
@@ -81,6 +99,7 @@ public class LoginController {
 
                 if(user.equals(userInfo)){
                     //redirect to album list
+
                     //handleDialog(Alert.AlertType.CONFIRMATION, "User exist!", "Confirmation");
 
                     // TODO pass user to controller (to load correct albums)

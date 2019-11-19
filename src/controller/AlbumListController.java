@@ -212,6 +212,7 @@ public class AlbumListController {
         ButtonType buttonAdd = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(buttonAdd);
 
+
         dialog.setResultConverter(b -> { return (b == buttonAdd) ? new Album(null,textName.getText()) : null;});
         Optional<Album> result = dialog.showAndWait();
 
