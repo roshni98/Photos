@@ -75,17 +75,17 @@ public class AlbumController {
         tilePane.setHgap(10);
 */
         // load all images into obs list
-        for(String path : album.getPics()){
-            System.out.println("path: "+path);
-            Image img = new Image("file:"+path, 100, 100, false, false);
-
-            Group root = new Group(new ImageView(img));
-            Scene scene = new Scene(root, 100, 100);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.show();
-
-            obsList.add(new ImageView(img));
+//        for(String path : album.getPics()){
+//            System.out.println("path: "+path);
+//            Image img = new Image("file:"+path, 100, 100, false, false);
+//
+//            Group root = new Group(new ImageView(img));
+//            Scene scene = new Scene(root, 100, 100);
+//            Stage stage = new Stage();
+//            stage.setScene(scene);
+//            stage.show();
+//
+//            obsList.add(new ImageView(img));
 //            tilePane.getChildren().add(new ImageView(img));
         }
 
