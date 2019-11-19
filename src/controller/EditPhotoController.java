@@ -1,17 +1,22 @@
 package controller;
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Album;
 import model.Photo;
 
-import java.util.Calendar;
+import javafx.scene.image.ImageView;
+
+import java.util.*;
 
 
 public class EditPhotoController {
@@ -28,43 +33,64 @@ public class EditPhotoController {
     Button albumListButton;
 
     @FXML
-    Button saveDate;
+    Text tagText;
 
     @FXML
-    Button saveLocation;
+    Text dateText;
 
     @FXML
-    TextField dateField;
-
-    @FXML
-    TextField tagField;
-
-    @FXML
-    TableView <String> tagTable;
-
-    @FXML
-    TableColumn <String, String>tagNameCol;
-
-    @FXML
-    TableColumn <String, String>tagValueCol;
+    Text captionText;
 
     @FXML
     AnchorPane rootPane;
 
     @FXML
-    public void handlePrevButton(){
+    private ImageView imgView;
 
+    @FXML
+    ListView<String> tagList;
+
+    private List<Photo> photoList;
+    private ObservableList<Photo> obsList;
+    private int selectedIndex;
+
+
+
+    public void init(ArrayList<Photo> pics, int index) {
+        this.photoList = pics;
+        this.selectedIndex = index;
+        if(index >= 0  && index < this.photoList.size()){
+            imgView.setImage(new Image(photoList.get(selectedIndex).getPath()));
+            tagList();
+        }
+        obsList = FXCollections.observableArrayList(this.photoList);
+    }
+
+    @FXML
+    public void handlePrevButton(){
+        if(selectedIndex == 0){
+            selectedIndex = photoList.size()-1;
+        }
+
+        if(selectedIndex > 0  && selectedIndex < this.photoList.size()){
+            selectedIndex--;
+        }
+        imgView.setImage(new Image(photoList.get(selectedIndex).getPath()));
+        tagList();
     }
 
     @FXML
     public void handleNextButton(){
-//        int i = Photo.getName.getPhotos().indexOf(Photo.currentPhoto);
-//        if (i == Photo.getName.getPhotos().size() - 1) {
-//            Photo.currentPhoto = Photo.currentAlbum.getPhotos().get(0);
-//        } else {
-//            Photo.currentPhoto = Photo.currentAlbum.getPhotos().get(i + 1);
-//        }
 
+        if(selectedIndex == photoList.size()-1){
+            selectedIndex = 0;
+        }
+
+        if(selectedIndex > 0  && selectedIndex < this.photoList.size()){
+            selectedIndex++;
+        }
+        imgView.setImage(new Image(photoList.get(selectedIndex).getPath()));
+        tagList();
     }
 
     @FXML
@@ -78,20 +104,37 @@ public class EditPhotoController {
     }
 
     @FXML
-    public void handleAlbumListButton(){
+    public void handleAlbumButton(){
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/albumList.fxml"));
+            VBox pane = FXMLLoader.load(getClass().getResource("../view/album.fxml"));
             rootPane.getChildren().setAll(pane);
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage, Photo photo, List<String> pics, int count_place) {
+                //List of pics and using count to keep track of which pic on
+
     }
 
-    private void showTextFields(Stage primaryStage){
+    public void tagList(){
+        Photo p = photoList.get(selectedIndex);
+        List<String> tagDisplay = new ArrayList<>();
+        HashMap<String, ArrayList<String>> tagsMap = p.getTags();
+        for(String key:tagsMap.keySet()){
+            tagDisplay.add(key+" : "+ String.join(",",tagsMap.get(key)));
+        }
+        ObservableList<String> tagDis = FXCollections.observableArrayList(tagDisplay);
+        tagList.setItems(tagDis);
+    }
 
+    public void settingDateText(){
+        dateText.setText(photoList.get(selectedIndex).getDate());
+    }
+
+    public void settingCaptionText(){
+        captionText.setText(photoList.get(selectedIndex).getCaption());
 
     }
 

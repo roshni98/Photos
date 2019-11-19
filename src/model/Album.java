@@ -1,5 +1,6 @@
 package model;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.io.Serializable;
@@ -10,7 +11,7 @@ public class Album implements Serializable {
 
     String user;
     String albumName;
-    ArrayList<String> pics;
+    ArrayList<Photo> pics;
     Date min_date;
     Date max_date;
 
@@ -19,14 +20,24 @@ public class Album implements Serializable {
     public Album(String user, String n) {
         this.user = user;
         this.albumName = n;
-        this.pics = new ArrayList<String>();
+        this.pics = new ArrayList<>();
+        this.min_date = new Date(Long.MIN_VALUE);
+        this.max_date = new Date(Long.MIN_VALUE);
     }
 
 
     public String getAlbumName() {
         return albumName;
-
     }
+    public String getMaxDate() {
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        return df.format(this.max_date);
+    }
+    public String getMinDate() {
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        return df.format(this.min_date);
+    }
+
 
     public void setName(String n) {
         //make sure no other album has same name
@@ -34,7 +45,7 @@ public class Album implements Serializable {
     }
 
     public void addPic(Photo p) {
-        pics.add(p.path);
+        pics.add(p);
         if (!dateSet) {
             this.max_date = p.date;
             this.min_date = p.date;
@@ -52,7 +63,7 @@ public class Album implements Serializable {
         pics.remove(p);
     }
 
-    public ArrayList<String> getPics() {
+    public ArrayList<Photo> getPics() {
         return pics;
     }
 

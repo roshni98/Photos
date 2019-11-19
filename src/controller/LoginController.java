@@ -84,7 +84,7 @@ public class LoginController {
                     //handleDialog(Alert.AlertType.CONFIRMATION, "User exist!", "Confirmation");
 
                     // TODO pass user to controller (to load correct albums)
-                    loader.setLocation(getClass().getResource("albumList.fxml"));
+                    loader.setLocation(getClass().getResource("./../view/albumList.fxml"));
                     root = (Parent) loader.load();
                     AlbumListController albumListController = loader.getController();
                     albumListController.init(new ArrayList<Album>());

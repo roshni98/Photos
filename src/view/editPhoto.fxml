@@ -11,15 +11,15 @@
   <children>
     <AnchorPane fx:id="rootPane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="100.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imgView" fitHeight="150.0" fitWidth="200.0" layoutX="100.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true" />
             <Button fx:id="previousButton" layoutX="74.0" layoutY="333.0" mnemonicParsing="false" onAction="#handlePrevButton" text="Previous" />
             <Button fx:id="nextButton" layoutX="275.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleNextButton" prefHeight="27.0" prefWidth="51.0" text="Next" />
             <Button fx:id="logoutButton" layoutX="477.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleLogoutButton" text="Logout" />
             <Text fx:id="tagText" layoutX="404.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" />
             <Text fx:id="dateText" layoutX="402.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
-            <Button fx:id="albumListButton" layoutX="52.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleAlbumListButton" text="Back to Album" />
+            <Button fx:id="albumListButton" layoutX="52.0" layoutY="46.0" mnemonicParsing="false" onAction="#handleAlbumButton" text="Back to Album" />
             <Text fx:id="captionText" layoutX="402.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Caption" />
-            <ListView layoutX="404.0" layoutY="232.0" prefHeight="144.0" prefWidth="161.0" />
+            <ListView fx:id="tagList" layoutX="404.0" layoutY="232.0" prefHeight="144.0" prefWidth="161.0" />
          </children>
     </AnchorPane>
   </children>

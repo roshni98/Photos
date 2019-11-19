@@ -21,6 +21,9 @@ public class Photo implements Serializable{
         date = d;
     }
 
+    public String getPath(){
+        return this.path;
+    }
 
     public String getCaption(){
         return caption;
@@ -51,5 +54,8 @@ public class Photo implements Serializable{
         date = d;
     }
 
+    public HashMap<String, ArrayList<String>> getTags(){
+        return tags;
+    }
 
 }
