@@ -74,6 +74,15 @@ public class AlbumListController {
         // load existing albums
         // initialize list of albums (to maintain in memory)
         primaryStage.setTitle("Album List");
+
+        primaryStage.setOnCloseRequest(event -> {
+            this.stop();  // Write all changes to data.json
+        });
+    }
+
+    //  TODO
+    private void stop(){
+        saveObject();
     }
 
     //load's folder icon

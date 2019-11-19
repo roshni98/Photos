@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 
 
 public class Album implements Serializable {
-
+    static final long serialVersionUID = 1;
     String user;
     String albumName;
     ArrayList<Photo> pics;

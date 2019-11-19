@@ -5,15 +5,17 @@ import java.io.Serializable;
 
 
 public class Photo implements Serializable{
+    static final long serialVersionUID = 1;
     HashMap<String, ArrayList<String>> tags;
     String caption;
     Date date;
     String path;
 
-    public Photo(String c, Date d, String path){
+    public Photo(String c, String path){
         this.caption = c;
-        this.date = d;
+        this.date = null; // TODO set date and time - use calendar class
         this.path = path;
+        this.tags = new HashMap<>();
     }
 
     public Photo(String c, String p, Date d, HashMap t){
