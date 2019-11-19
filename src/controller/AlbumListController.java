@@ -109,7 +109,7 @@ public class AlbumListController {
         Text albumNameText = new Text(a.getAlbumName());
         albumNameText.setStyle("-fx-font-size: 12");
         albumNameText.setOnMouseClicked(mouseEvent -> {
-            albumNameText.setText(updateAlbum(a));
+                albumNameText.setText(updateAlbum(a));
         });
         Text albumSizeText = new Text("size:"+a.getPics().size());
         albumSizeText.setStyle("-fx-font-size: 10");
@@ -269,4 +269,3 @@ public class AlbumListController {
 
 
 }
-
