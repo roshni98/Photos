@@ -53,7 +53,9 @@ public class EditPhotoController {
     private List<Photo> photoList;
     private ObservableList<Photo> obsList;
     private int selectedIndex;
-
+//need
+//list of photos in album
+// photo clicked on by index
 
 
     public void init(ArrayList<Photo> pics, int index) {

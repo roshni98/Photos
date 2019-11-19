@@ -87,6 +87,7 @@ public class LoginController {
                     loader.setLocation(getClass().getResource("./../view/albumList.fxml"));
                     root = (Parent) loader.load();
                     AlbumListController albumListController = loader.getController();
+                    // TODO pass user's list of albums
                     albumListController.init(new ArrayList<Album>());
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
