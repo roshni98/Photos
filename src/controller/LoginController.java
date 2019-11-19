@@ -126,7 +126,7 @@ public class LoginController {
                 }
             }
 
-            handleDialog(Alert.AlertType.ERROR, "User does not exist! Please try again!", "Error");
+            Utils.handleDialog(Alert.AlertType.ERROR, "User does not exist! Please try again!", "Error");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -167,20 +167,6 @@ public class LoginController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Generalized method for creating dialog boxes.
-     * @param alertType type of alert (e.g. error, warning, etc)
-     * @param  contextText Message to be displayed in dialog
-     * @param title Title of dialog box
-     * */
-    @FXML
-    public Optional<ButtonType> handleDialog(Alert.AlertType alertType, String contextText, String title) {
-        Alert errorAlert = new Alert(alertType);
-        errorAlert.setContentText(contextText);
-        errorAlert.setTitle(title);
-        return errorAlert.showAndWait();
     }
 }
 

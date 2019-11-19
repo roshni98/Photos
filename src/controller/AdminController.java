@@ -1,3 +1,7 @@
+/**
+ * @author Amulya Mummaneni
+ * */
+
 package controller;
 
 import javafx.collections.FXCollections;
@@ -11,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import jdk.jshell.execution.Util;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,42 +26,77 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import controller.Utils;
 
 public class AdminController {
 
+    /**
+     * Main UI panel
+     * */
     @FXML
     AnchorPane rootPane;
 
+    /**
+     * List of users
+     * */
     @FXML
     ListView<String> listView;
 
+    /**
+     * Button to create user
+     * */
     @FXML
     Button createButton;
 
+    /**
+     * Button to delete user
+     * */
     @FXML
     Button deleteButton;
 
+    /**
+     * Button to log out admin
+     * */
     @FXML
     Button logoutButton;
 
+    /**
+     * Textfield to create user
+     * */
     @FXML
     TextField addUserBox;
 
+    /**
+     * Button to add user
+     * */
     @FXML
     Button addUserButton;
 
+    /**
+     * Button to cancel adding a user
+     * */
     @FXML
     Button cancelButton;
 
+    /**
+     * Text displaying current action
+     * */
     @FXML
     Text panelText;
 
+    /**
+     * List that is updated as changes are made to user list
+     * */
     private ObservableList<String> obsList;
 
+    /**
+     * In-memory list of users written to memory at end of each session with admin
+     * */
     private List<String> accounts;
 
-    //int songIndex = listView.getSelectionModel().getSelectedIndex();
-
+    /**
+     * Start method to set up admin UI and data structures
+     * */
     public void start(Stage primaryStage){
         addUserButton.setVisible(false);
         addUserBox.setVisible(false);
@@ -76,11 +116,13 @@ public class AdminController {
         }
 
         primaryStage.setOnCloseRequest(event -> {
-            // Update file
-            this.stop();
+            this.stop();  // Write all changes to data.json
         });
     }
 
+    /**
+     * Stop method to write admin info to memory
+     * */
     public void stop(){
         // write all accounts to JSON file
         JSONArray outputList = new JSONArray();
@@ -101,6 +143,9 @@ public class AdminController {
 
     // event handlers
 
+    /**
+     * Event handler to create new user
+     * */
     @FXML
     public void handleCreateButton(){
         // create new user and write to JSON file
@@ -114,45 +159,59 @@ public class AdminController {
         deleteButton.setVisible(false);
     }
 
+    /**
+     * Event handler to delete user
+     * */
     @FXML
-    public void handleDeleteButton(){
-        Optional<ButtonType> result = handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to DELETE this user?", "Confirmation Dialog");
+    public void handleDeleteButton() throws Exception {
+        Optional<ButtonType> result = Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to DELETE this user?", "Confirmation Dialog");
 
         if(result.isPresent() && result.get() == ButtonType.OK){
 
             int acctIndex = listView.getSelectionModel().getSelectedIndex();
-            accounts.remove(acctIndex);
-            buildObsList();
+            String user = accounts.get(acctIndex);
+            accounts.remove(acctIndex); // remove user from in-memory list
+            buildObsList(); // rebuild obs list
+            resetUI();
 
             // select different user
             // check next, then prev, else list is empty
 
-            resetUI();
-
             if(accounts.size() == 0){ // if list is empty
-                deleteButton.setVisible(false);
+                deleteButton.setVisible(false); // make delete button invisible
             }
 
             if(acctIndex >= obsList.size()){
                 acctIndex--;
             }
 
+            // update listview
             listView.setItems(obsList);
             listView.getSelectionModel().select(acctIndex);
+
+            // delete user's file from application
+            File file = new File(user+".txt"); // find user's serializable file
+            if(file.exists()){
+                if(!file.delete()){ // delete file
+                    throw new Exception("User not deleted"); // throw error if deletion unsuccessful
+                }
+            }
         }
     }
 
+    /**
+     * Redirects user to login page and saves changes to user accounts
+     * */
     @FXML
     public void handleLogoutButton(){
-        // current user is no longer admin
-        // redirect to login page
+        // current user is no longer admin - redirect to login page
+
+        this.stop(); // write all changes to data.json
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();
 
         try {
-            //VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
-           // rootPane.getChildren().setAll(pane);
             stage = (Stage) logoutButton.getScene().getWindow();
             loader.setLocation(getClass().getResource("../view/login.fxml"));
             root = (Parent) loader.load();
@@ -167,18 +226,27 @@ public class AdminController {
         }
     }
 
+    /**
+     * Adds user to application
+     * */
     @FXML
     public void handleAddUserButton(){
         String username = addUserBox.getText();
 
         // check if it's a duplicate
         if(isDuplicate(username)){ // if so, error popup
-            handleDialog(Alert.AlertType.ERROR, "User already exists.", "Duplicate detected");
+            Utils.handleDialog(Alert.AlertType.ERROR, "User already exists.", "Duplicate detected");
+            return;
+        }
+
+        // check if attempting to create admin account
+        if(username.toString().equals("admin")){
+            Utils.handleDialog(Alert.AlertType.ERROR, "Cannot create admin account.", "Account creation denied");
             return;
         }
 
         // otherwise, add account
-        Optional<ButtonType> result = handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to save?", "Confirm Save");
+        Optional<ButtonType> result = Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to save?", "Confirm Save");
 
         if(result.isPresent() && result.get() == ButtonType.OK){
             accounts.add(username);
@@ -193,26 +261,24 @@ public class AdminController {
         }
     }
 
+    /**
+     * Handles dialog cancel button
+     * */
     @FXML
     public void handleCancelButton() {
 
-        Optional<ButtonType> result = handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel this action?", "Confirmation");
+        Optional<ButtonType> result = Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel this action?", "Confirmation");
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             resetUI();
         }
     }
 
-    @FXML
-    public Optional<ButtonType> handleDialog(Alert.AlertType alertType, String contextText, String title){
-        Alert errorAlert = new Alert(alertType);
-        errorAlert.setContentText(contextText);
-        errorAlert.setTitle(title);
-        return errorAlert.showAndWait();
-    }
-
     // helpers
 
+    /**
+     * Helper that rebuilds observable list when changes are made in-memory
+     * */
     public void buildObsList(){
         obsList.clear();
         for(String user : accounts){
@@ -220,6 +286,9 @@ public class AdminController {
         }
     }
 
+    /**
+     * Resets UI features to default positions
+     * */
     public void resetUI(){
         panelText.setText("Manage Users");
 
@@ -231,6 +300,9 @@ public class AdminController {
         deleteButton.setVisible(true);
     }
 
+    /**
+     * Checks if user is duplicate
+     * */
     public boolean isDuplicate(String username){
         for(String user : accounts){
             if(username.equals(user)){
@@ -240,6 +312,9 @@ public class AdminController {
         return false;
     }
 
+    /**
+     * Loads all user accounts from memory
+     * */
     public void loadAccounts() {
         JSONParser parser = new JSONParser();
 
