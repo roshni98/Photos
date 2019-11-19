@@ -4,12 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -22,19 +22,19 @@ import javafx.stage.Stage;
 import model.Album;
 import model.Photo;
 import model.User;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class AlbumController {
 
     @FXML
     AnchorPane rootPane;
-
-    @FXML
-    GridPane gridPane;
 
     @FXML
     TilePane tilePane;
@@ -69,7 +69,10 @@ public class AlbumController {
     @FXML
     ListView<String> tagList;
 
-    private ObservableList<ImageView> obsList;
+    @FXML
+    ScrollPane scroller;
+
+    private ObservableList<Photo> obsList;
     private User u; // needed for passing user info
     private Album album;
 
@@ -77,67 +80,131 @@ public class AlbumController {
         this.u = u;
         for(int i =0; i< u.getAlbumList().size(); i++){
             if(u.getAlbumList().get(i).getAlbumName().equals(selectedAlbumName)){
-                this.album = u.getAlbumList().get(i);
-                albumNameText.setText(this.album.getAlbumName());
+                this.album = u.getAlbumList().get(i); // set current album
+                albumNameText.setText(this.album.getAlbumName()); // set album name on UI
             }
         }
+
+        // populate obsList
+        obsList = FXCollections.observableArrayList(this.album.getPics());
+
+        scroller.setFitToHeight(true);
+        scroller.setFitToWidth(true);
+        scroller.setContent(tilePane);
+
+        // load photos into tilepane
+        for(Photo photo : obsList){
+            addToTilePane(photo);
+        }
+
     }
 
     public void start(Stage primaryStage){
 
-        ArrayList<Photo> pics = album.getPics(); // photo list
+    }
 
-        obsList = FXCollections.observableArrayList();
+    private void addToTilePane(Photo photo){
+        VBox v = new VBox();
+        ImageView i = new ImageView();
+        i.setImage(getPhotoImage(photo));
+        i.setFitWidth(40);
+        i.setFitHeight(40);
+        i.setOnMouseClicked(event ->{
+            goToPhotoPage(i, this.album.getPics(), this.album.getPics().indexOf(photo));
+        });
 
-       /* ScrollPane root = new ScrollPane();
-        tilePane.setHgap(10);
-*/
-        // load all images into obs list
+        // add imageview
+        v.getChildren().add(i);
 
-        for(Photo photo : album.getPics()){
-            System.out.println("path: "+photo.getPath());
-            Image img = new Image("file:"+photo.getPath(), 100, 100, false, false);
+        // Set caption
+        Text caption = new Text(photo.getCaption());
+        caption.setStyle("-fx-font-size: 12");
+        caption.setOnMouseClicked(mouseEvent -> {
+            caption.setText(updateCaption(photo));
+        });
 
-            Group root = new Group(new ImageView(img));
-            Scene scene = new Scene(root, 100, 100);
-            Stage stage = new Stage();
+        // delete button
+        Button deleteButton = new Button();
+        deleteButton.setText("delete");
+        deleteButton.setOnMouseClicked(mouseEvent -> {
+            handleDeletePhotoButton(photo);
+        });
+
+        v.getChildren().add(caption);
+       // v.getChildren().add(deleteButton);
+        v.setAlignment(Pos.BASELINE_CENTER);
+        v.setSpacing(10);
+        v.setPadding(new Insets(25,30,30,30));
+        tilePane.getChildren().add(v);
+    }
+
+    //load photo image
+    private Image getPhotoImage(Photo photo){
+        String photoPath= "/src/model/" + photo.getPath();
+        File directory = new File("./");
+        String path = directory.getAbsolutePath().substring(0,directory.getAbsolutePath().length()-1)+photoPath;
+        File f = new File(path);
+        if(f.exists()) {
+            return new Image("file:"+f.getAbsolutePath());
+        }
+        return null;
+    }
+
+    // if user clicks photo caption in tilepane, they may rename
+    private String updateCaption(Photo selected){
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setContentText("Dialog");
+        dialog.setHeaderText("Enter new caption: ");
+        GridPane grid = new GridPane();
+        Label labelName = new Label("Caption: ");
+        TextField textName= new TextField();
+        grid.add(labelName, 1, 1);
+        grid.add(textName, 2, 1);
+        dialog.getDialogPane().setContent(grid);
+        ButtonType buttonAdd = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(buttonAdd);
+
+        dialog.setResultConverter(b -> { return (b == buttonAdd) ? textName.getText() : null;});
+        Optional<String> result = dialog.showAndWait();
+
+        if(result.isPresent()) {
+            selected.setCaption(result.get());
+        }
+        return selected.getCaption();
+    }
+
+    /**
+     * Redirects to single view photo page
+     * */
+    public void goToPhotoPage(ImageView i, ArrayList<Photo> pics, int index) {
+        Parent root;
+        Stage stage;
+        FXMLLoader loader = new FXMLLoader();
+
+        try {
+            stage = (Stage) i.getScene().getWindow();
+            loader.setLocation(getClass().getResource("../view/editPhoto.fxml"));
+            root = (Parent) loader.load();
+            EditPhotoController editPhotoController = loader.getController();
+            editPhotoController.init(pics, index);
+            Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
-
-            obsList.add(new ImageView(img));
-
-//            tilePane.getChildren().add(new ImageView(img));
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-/*
-        root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Horizontal
-        root.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Vertical scroll bar
-        root.setFitToWidth(true);
-        root.setContent(tilePane);
-*/
-
-
-        // TODO fix this
-        // set gridpane to obsList items
-        int numCols = gridPane.getColumnCount();
-        int row = 0, col = 0;
-        for(int i = 0; i < pics.size(); i++, col++){
-            if(col == numCols){ // if reached end of one row, reset to next row
-                col = 0;
-                row++;
-            }
-            gridPane.add(obsList.get(i), row, col);
-            //System.out.println("hello");
-        }
-
-        albumNameText.setText(album.getAlbumName());
-
     }
+
 
     // event handlers
 
+    /**
+     * Delete photo from album
+     * @param photo picture to be deleted
+     * */
     @FXML
-    public void handleDeletePhotoButton(){
+    public void handleDeletePhotoButton(Photo photo){
 
     }
 

@@ -237,7 +237,7 @@ public class AlbumListController {
         grid.add(labelName, 1, 1);
         grid.add(textName, 2, 1);
         dialog.getDialogPane().setContent(grid);
-        ButtonType buttonAdd = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        ButtonType buttonAdd = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(buttonAdd);
 
         dialog.setResultConverter(b -> { return (b == buttonAdd) ? textName.getText() : null;});

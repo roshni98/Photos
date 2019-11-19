@@ -30,7 +30,6 @@ public class Photo implements Serializable{
     }
 
     public void setCaption(String a) {
-
         this.caption = a;
     }
 
