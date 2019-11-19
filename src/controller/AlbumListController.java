@@ -94,7 +94,7 @@ public class AlbumListController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    Photo tn = a.getThumbnail();
+                    /*Photo tn = a.getThumbnail();
                     File directory = new File("./");
                     String path = tn==null ?directory.getAbsolutePath().substring(0,directory.getAbsolutePath().length()-1)+"/src/model/swift.png": tn.getPath();
                     imageView = new ImageView("file:"+path);
@@ -102,7 +102,7 @@ public class AlbumListController {
                     imageView.setFitWidth(100);
                     setText(a.getName());
                     setFont(Font.font(20));
-                    setGraphic(imageView);
+                    setGraphic(imageView);*/
                 }
             }
         });
@@ -169,15 +169,15 @@ public class AlbumListController {
         ButtonType buttonAdd = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(buttonAdd);
 
-        dialog.setResultConverter(b -> { return (b == buttonAdd) ? new Album(textName.getText()) : null;});
+        //dialog.setResultConverter(b -> { return (b == buttonAdd) ? new Album(textName.getText()) : null;});
         Optional<Album> result = dialog.showAndWait();
 
         if(result.isPresent()) {
             Album a = result.get();
             File directory = new File("./");
             Photo p = new Photo(null,null,null);
-            p.setPath(directory.getAbsolutePath().substring(0,directory.getAbsolutePath().length()-1)+"/src/model/swift.png");
-            p.setlabel(a.getName());
+           /* p.setPath(directory.getAbsolutePath().substring(0,directory.getAbsolutePath().length()-1)+"/src/model/swift.png");
+            p.setlabel(a.getName());*/
             p.setDate(new Date());
             a.addPic(p);
 
@@ -192,7 +192,7 @@ public class AlbumListController {
                 obsList.add(a);
 //                user.addAlbum(result.get());
                 try{
-                    File file = new File(a.getName());
+                    /*File file = new File(a.getName());
                     if(file.exists()){
                         file.delete();
                     }
@@ -200,7 +200,7 @@ public class AlbumListController {
                     FileOutputStream fileStream = new FileOutputStream(file);
                     ObjectOutputStream out = new ObjectOutputStream(fileStream);
 //                    out.writeObject(user);
-                    out.close();
+                    out.close();*/
                 } catch (Exception e){
                     //e.printStackTrace();
                 }
