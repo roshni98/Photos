@@ -195,7 +195,7 @@ public class AlbumListController {
             loader.setLocation(getClass().getResource("./../view/album.fxml"));
             root = (Parent) loader.load();
             AlbumController albumController = loader.getController();
-
+            updateUserList();
             // passing user object in init
             albumController.init(this.user, albumName);
             Scene scene = new Scene(root);
