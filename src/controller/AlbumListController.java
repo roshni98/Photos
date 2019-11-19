@@ -25,6 +25,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class AlbumListController {
@@ -54,8 +55,12 @@ public class AlbumListController {
 
     private ObservableList<Album> obsList;
 
+    private List<Album> albums;
 
-    public void init(ArrayList<Album> albums) {
+    public void init() {
+        // deserialize from album model
+            // go through all albums. if user of album matches current user,
+        albums = new ArrayList<>();
         obsList = FXCollections.observableArrayList(albums);
         displayAlbumTile.setPrefColumns(4);
         scroller.setFitToHeight(true);
@@ -103,7 +108,8 @@ public class AlbumListController {
         i.setFitHeight(40);
         i.setOnMouseClicked(event ->{
             //TODO pass in album clicked (init of albumcontroller)
-            goToAlbumPage();
+            // serialize all albums
+            goToAlbumPage(); // TODO change this redirect to format in login controller
         });
         v.getChildren().add(i);
         Text albumNameText = new Text(a.getAlbumName());
@@ -256,6 +262,10 @@ public class AlbumListController {
 
     public void start(Stage primaryStage){
         //VBox box = new VBox();
+
+        // load existing albums
+
+        // initialize list of albums (to maintain in memory)
 
         primaryStage.setTitle("Album List");
 
