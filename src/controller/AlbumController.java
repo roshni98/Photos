@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -20,7 +21,11 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Album;
 import model.Photo;
+import model.User;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class AlbumController {
@@ -65,8 +70,20 @@ public class AlbumController {
     ListView<String> tagList;
 
     private ObservableList<ImageView> obsList;
+    private User u; // needed for passing user info
+    private Album album;
 
-    public void start(Stage primaryStage, Album album){
+    public void init(User u, String selectedAlbumName){
+        this.u = u;
+        for(int i =0; i< u.getAlbumList().size(); i++){
+            if(u.getAlbumList().get(i).getAlbumName().equals(selectedAlbumName)){
+                this.album = u.getAlbumList().get(i);
+                albumNameText.setText(this.album.getAlbumName());
+            }
+        }
+    }
+
+    public void start(Stage primaryStage){
 
         ArrayList<Photo> pics = album.getPics(); // photo list
 
@@ -153,14 +170,57 @@ public class AlbumController {
 
     }
 
+
+    // updates user object with latest album updates
+    // don't change logic, will break saving user
+    private void updateUserList(){
+        for(int i =0; i< u.getAlbumList().size(); i++){
+            if(u.getAlbumList().get(i).getAlbumName().equals(album.getAlbumName())){
+                u.getAlbumList().set(i,this.album);
+                break;
+            }
+        }
+    }
+
+    //save object to file
+    private void saveObject(){
+        updateUserList();
+        File file = new File(this.u.getUsername()+".txt");
+        if(file.exists()){
+            file.delete();
+        }
+        try {
+            file.createNewFile();
+            //writing serialized object (create user file if does not exist)
+            FileOutputStream fileStream = new FileOutputStream(file); //open file for saving
+            ObjectOutputStream out = new ObjectOutputStream(fileStream); //write object into file
+            out.writeObject(this.u); // saves user object into file
+            out.close();
+        }catch (Exception e){
+            //e.printStackTrace();
+        }
+    }
+
     /**
      * Redirects user to album list from single album view
      * */
     @FXML
     public void handleAlbumListButton(){
+        Parent root;
+        Stage stage;
+        FXMLLoader loader = new FXMLLoader();
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/albumList.fxml"));
-            rootPane.getChildren().setAll(pane);
+            saveObject();
+            stage = (Stage) albumListButton.getScene().getWindow();
+            loader.setLocation(getClass().getResource("./../view/albumList.fxml"));
+            root = (Parent) loader.load();
+            AlbumListController albumController = loader.getController();
+            // passing user object in init
+            albumController.init(this.u);
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return;
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -172,6 +232,7 @@ public class AlbumController {
     @FXML
     public void handleLogoutButton(){
         try {
+            saveObject();
             VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
             rootPane.getChildren().setAll(pane);
         }catch(Exception e){

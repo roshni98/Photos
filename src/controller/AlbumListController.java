@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -22,15 +24,18 @@ import model.Album;
 import model.Photo;
 
 import javafx.scene.image.ImageView;
+import model.User;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class AlbumListController {
     @FXML
-    Button logout;
+    Button logoutButton;
 
     @FXML
     Button createAlbumButton;
@@ -39,29 +44,24 @@ public class AlbumListController {
     Button searchButton;
 
     @FXML
-    Button deleteAlbumButton;
-
-    @FXML
     AnchorPane rootPane;
 
     @FXML
     TilePane displayAlbumTile;
 
-    @FXML
-    Text album_name;
 
     @FXML
     ScrollPane scroller;
-
+    //need observable list for tile pane to update list of albums
     private ObservableList<Album> obsList;
-
+    private User user;
     private List<Album> albums;
 
-    public void init() {
-        // deserialize from album model
-            // go through all albums. if user of album matches current user,
-        albums = new ArrayList<>();
-        obsList = FXCollections.observableArrayList(albums);
+    // allow's us to pass albums object from previous page
+    public void init(User u) {
+        this.user = u;
+        albums = u.getAlbumList();
+        obsList = FXCollections.observableArrayList(u.getAlbumList());
         displayAlbumTile.setPrefColumns(4);
         scroller.setFitToHeight(true);
         scroller.setFitToWidth(true);
@@ -69,6 +69,7 @@ public class AlbumListController {
         updateTilePane();
     }
 
+    //load's folder icon
     private Image albumFolderImage(){
         String folderImgFilePath= "/src/model/folder.png";
         File directory = new File("./");
@@ -80,26 +81,26 @@ public class AlbumListController {
         return null;
     }
 
+    //refreshes tile pane
     private void updateTilePane(){
         if(obsList.size() > 0) {
             for (Album a : obsList) {
-                VBox v = new VBox();
-                ImageView i = new ImageView();
-                i.setImage(albumFolderImage());
-                i.setFitWidth(40);
-                i.setFitHeight(40);
-                i.setOnMouseClicked(event ->{
-                    goToAlbumPage();
-                });
-                v.getChildren().add(i);
-                v.getChildren().add(new Text(a.getAlbumName()));
-                v.setAlignment(Pos.BASELINE_CENTER);
-                v.setSpacing(25);
-                displayAlbumTile.getChildren().add(v);
+                addToTilePane(a);
             }
         }
     }
 
+    // delete album
+    private void delete(Album a){
+        for(int i=0;i<obsList.size();i++){
+           if(a.getAlbumName().equals(obsList.get(i).getAlbumName())){
+               obsList.remove(i);
+               displayAlbumTile.getChildren().remove(i);
+            }
+        }
+    }
+
+    // add's each album to tile pane one by one
     private void addToTilePane(Album a){
         VBox v = new VBox();
         ImageView i = new ImageView();
@@ -107,9 +108,7 @@ public class AlbumListController {
         i.setFitWidth(40);
         i.setFitHeight(40);
         i.setOnMouseClicked(event ->{
-            //TODO pass in album clicked (init of albumcontroller)
-            // serialize all albums
-            goToAlbumPage(); // TODO change this redirect to format in login controller
+            goToAlbumPage(i,a.getAlbumName());
         });
         v.getChildren().add(i);
         Text albumNameText = new Text(a.getAlbumName());
@@ -121,29 +120,89 @@ public class AlbumListController {
         albumSizeText.setStyle("-fx-font-size: 10");
         Text albumDateRange = new Text(a.getMinDate()+"-"+a.getMaxDate());
         albumDateRange.setStyle("-fx-font-size: 10");
+        Button deleteButton = new Button();
+        deleteButton.setText("delete");
+        deleteButton.setOnMouseClicked(mouseEvent -> {
+            delete(a);
+        });
         v.getChildren().add(albumNameText);
         v.getChildren().add(albumSizeText);
         v.getChildren().add(albumDateRange);
+        v.getChildren().add(deleteButton);
         v.setAlignment(Pos.BASELINE_CENTER);
         v.setSpacing(10);
         v.setPadding(new Insets(25,30,30,30));
         displayAlbumTile.getChildren().add(v);
     }
 
-    @FXML
-    public void handleLogout(){ //directs to login page
+    // get latest albums and update user object
+    private void updateUserList(){
+        ArrayList<Album> updatedList = new ArrayList<>();
+        for(Album a : obsList){
+            updatedList.add(a);
+        }
+        this.user.setAlbumList(updatedList);
+    }
+
+    //save object to file
+    private void saveObject(){
+        updateUserList();
+        File file = new File(this.user.getUsername()+".txt");
+        if(file.exists()){
+            file.delete();
+        }
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
-            rootPane.getChildren().setAll(pane);
-        }catch(Exception e){
+            file.createNewFile();
+            //writing serialized object (create user file if does not exist)
+            FileOutputStream fileStream = new FileOutputStream(file); //open file for saving
+            ObjectOutputStream out = new ObjectOutputStream(fileStream); //write object into file
+            out.writeObject(this.user); // saves user object into file
+            out.close();
+        }catch (Exception e){
+            //e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    public void handleLogout() { //directs to login page
+        Parent root;
+        Stage stage;
+        FXMLLoader loader = new FXMLLoader();
+        try {
+            saveObject();
+            stage = (Stage) logoutButton.getScene().getWindow();
+            loader.setLocation(getClass().getResource("./../view/login.fxml"));
+            root = (Parent) loader.load();
+            LoginController loginController = loader.getController();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return;
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void goToAlbumPage(){
+    private void goToAlbumPage(ImageView imageView, String albumName){
+        Parent root;
+        Stage stage;
+        FXMLLoader loader = new FXMLLoader();
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/album.fxml"));
-            rootPane.getChildren().setAll(pane);
+            stage = (Stage) imageView.getScene().getWindow();
+            loader.setLocation(getClass().getResource("./../view/album.fxml"));
+            root = (Parent) loader.load();
+            AlbumController albumController = loader.getController();
+
+            // passing user object in init
+            albumController.init(this.user, albumName);
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return;
+
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -159,18 +218,7 @@ public class AlbumListController {
         }
     }
 
-//    private void openFile(File file) {
-//        try {
-//            desktop.open(file);
-//        } catch (IOException ex) {
-//            Logger.getLogger(
-//                    FileChooserSample.class.getName()).log(
-//                    Level.SEVERE, null, ex
-//            );
-//        }
-//    }
-
-
+    // if user clicks filename in tilepane, they may rename
     private String updateAlbum(Album selected){
         Dialog <String> dialog = new Dialog<>();
         dialog.setContentText("Dialog");
@@ -237,45 +285,11 @@ public class AlbumListController {
         }
     }
 
-//    private void showInfo(){
-//        //			try{
-//        int index = listView.getSelectionModel().getSelectedIndex();
-//        if(index == -1 && obsList.size()>0){
-//            listView.getSelectionModel().select(0);
-//        }else if (obsList.size()>0){
-//            Album item = listView.getSelectionModel().getSelectedItem();
-//            Photo tn = item.getThumbnail();
-//            //System.out.println(tn);
-//            File directory = new File("./");
-//            String path = tn==null ?directory.getAbsolutePath()+"/question_mark.jpg": tn.getPath();
-//
-//            if (item != null){
-//                album_name.setText(item.getName());
-////                album_thumbnail.setImage(new Image("file:"+path));
-//                item.resetDates();
-////                int size = user.getAlbums().get(user.getAlbums().indexOf(item)).getPhotos().size();
-////                album_size.setText(""+size);
-////                if(size == 0){
-////                    item.resetDates();
-////                    //System.out.println("HERE");
-
-
     public void start(Stage primaryStage){
         //VBox box = new VBox();
-
         // load existing albums
-
         // initialize list of albums (to maintain in memory)
-
         primaryStage.setTitle("Album List");
-
-//        createAlbumButton.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent actionEvent) {
-//
-//            }
-//        });
-
     }
 
 

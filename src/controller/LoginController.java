@@ -13,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Album;
+import model.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -37,11 +38,14 @@ public class LoginController {
 
     List<String> users;
 
+    List<User> userObjectList;
+
+
     public void start(Stage primaryStage) throws IOException {
-       // objList = FXCollections.observableArrayList();
+        // objList = FXCollections.observableArrayList();
 
         users = new ArrayList<String>();
-
+        userObjectList = new ArrayList<>();
        /* FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("../view/albumList.fxml"));
 
@@ -64,17 +68,20 @@ public class LoginController {
 
     /**
      * Handle login when user submits username
-     * */
+     */
     public void handleLoginButton() throws IOException {
+        if(userObjectList == null){
+            userObjectList = new ArrayList<>();
+        }
         Parent root;
         Stage stage;
         String userInfo = usernameField.getText(); //holds text entered
         JSONParser parser = new JSONParser();
         FXMLLoader loader = new FXMLLoader();
 
-        try{
+        try {
             stage = (Stage) loginButton.getScene().getWindow();
-            if(userInfo.equals("admin")){
+            if (userInfo.equals("admin")) {
                 loader.setLocation(getClass().getResource("../view/admin.fxml"));
                 root = (Parent) loader.load();
                 AdminController adminController = loader.getController();
@@ -87,27 +94,31 @@ public class LoginController {
 
             stage = (Stage) loginButton.getScene().getWindow();
             File fil = new File("data.json"); //path of json
-            if(fil.length() == 0)return; //file empty, don't load anything
+            if (fil.length() == 0) return; //file empty, don't load anything
             FileReader fr = new FileReader(fil);
             Object obj = parser.parse(fr);
             JSONArray jsonArray = (JSONArray) obj;
             Iterator<JSONObject> iterator = jsonArray.iterator();
 
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 JSONObject currentAccount = iterator.next(); // looking through current user
                 String user = (String) currentAccount.get("User");
+                createLoadUser(user);
 
-                if(user.equals(userInfo)){
-                    //redirect to album list
-
-                    //handleDialog(Alert.AlertType.CONFIRMATION, "User exist!", "Confirmation");
-
+                if (user.equals(userInfo)) {
+                    User userObject = null;
+                    for(int i =0; i<userObjectList.size(); i++){
+                        if(user.equals(userObjectList.get(i).getUsername())){
+                            userObject = userObjectList.get(i);
+                        }
+                    }
                     // TODO pass user to controller (to load correct albums)
                     loader.setLocation(getClass().getResource("./../view/albumList.fxml"));
                     root = (Parent) loader.load();
                     AlbumListController albumListController = loader.getController();
-                    // TODO pass user's list of albums
-                    albumListController.init();
+
+                    // passing user object in init
+                    albumListController.init(userObject);
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
                     stage.show();
@@ -117,21 +128,50 @@ public class LoginController {
 
             handleDialog(Alert.AlertType.ERROR, "User does not exist! Please try again!", "Error");
 
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        }catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     @FXML
-    public Optional<ButtonType> handleDialog(Alert.AlertType alertType, String contextText, String title){
+    public Optional<ButtonType> handleDialog(Alert.AlertType alertType, String contextText, String title) {
         Alert errorAlert = new Alert(alertType);
         errorAlert.setContentText(contextText);
         errorAlert.setTitle(title);
         return errorAlert.showAndWait();
+    }
+
+    private void createLoadUser(String username) {
+        try {
+            File file = new File(username+".txt");
+            if (!file.exists()) {
+                file.createNewFile();
+                //writing serialized object (create user file if does not exist)
+                FileOutputStream fileStream = new FileOutputStream(file); //open file for saving
+                ObjectOutputStream out = new ObjectOutputStream(fileStream); //write object into file
+                User u = new User(username);
+                out.writeObject(u); // saves user object into file
+                out.close();
+            }
+            //loading serialized object
+            FileInputStream fileInputStream = new FileInputStream(file); //open file for reading
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream); //read object from file
+            if (fileInputStream.available() > 0) {
+                User currentUser = (User) objectInputStream.readObject(); //load object from file to object User
+                userObjectList.add(currentUser);
+            }
+            objectInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
 
