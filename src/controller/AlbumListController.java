@@ -102,6 +102,7 @@ public class AlbumListController {
         i.setFitWidth(40);
         i.setFitHeight(40);
         i.setOnMouseClicked(event ->{
+            //TODO pass in album clicked (init of albumcontroller)
             goToAlbumPage();
         });
         v.getChildren().add(i);

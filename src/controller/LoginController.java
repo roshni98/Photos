@@ -99,17 +99,18 @@ public class LoginController {
 
                 if(user.equals(userInfo)){
                     //redirect to album list
-                    //handleDialog(Alert.AlertType.CONFIRMATION, "User exist!", "Confirmation")
-                        // TODO pass user to controller (to load correct albums)
-                        loader.setLocation(getClass().getResource("../view/albumList.fxml"));
-                        root = (Parent) loader.load();
-                        AlbumListController albumListController = loader.getController();
-                        albumListController.init(new ArrayList<Album>());
-                        albumListController.start(stage);
-                        Scene scene = new Scene(root);
-                        stage.setScene(scene);
-                        stage.show();
-                        return;
+
+                    //handleDialog(Alert.AlertType.CONFIRMATION, "User exist!", "Confirmation");
+
+                    // TODO pass user to controller (to load correct albums)
+                    loader.setLocation(getClass().getResource("./../view/albumList.fxml"));
+                    root = (Parent) loader.load();
+                    AlbumListController albumListController = loader.getController();
+                    // TODO pass user's list of albums
+                    albumListController.init(new ArrayList<Album>());
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
                 }
             }
 
