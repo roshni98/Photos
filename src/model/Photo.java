@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 
 public class Photo implements Serializable{
-    static final long serialVersionUID = 1;
     HashMap<String, ArrayList<String>> tags;
     String caption;
     Date date;
@@ -13,7 +12,7 @@ public class Photo implements Serializable{
 
     public Photo(String c, String path){
         this.caption = c;
-        this.date = null; // TODO set date and time - use calendar class
+        this.date = generateDate();
         this.path = path;
         this.tags = new HashMap<>();
     }
@@ -41,13 +40,18 @@ public class Photo implements Serializable{
         return false;
     }
 
-    public String getDate(){
+    public Date getDate() {
+        return date;
+    }
+
+    public Date generateDate(){
         Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        int year = cal.get(Calendar.YEAR);
-        return month + "/" + day + "/" + year;
+        cal.set(Calendar.MILLISECOND, 0);
+        //cal.setTime(date);
+        //int month = cal.get(Calendar.MONTH) + 1;
+        //int day = cal.get(Calendar.DAY_OF_MONTH);
+        //int year = cal.get(Calendar.YEAR);
+        return cal.getTime();
 
     }
 

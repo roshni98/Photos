@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -11,21 +12,33 @@
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <Button fx:id="albumListButton" onAction="#handleAlbumListButton" layoutX="30.0" layoutY="36.0" mnemonicParsing="false" text="&lt; Album List" />
-            <Button fx:id="logoutButton" onAction="#handleLogoutButton" layoutX="523.0" layoutY="36.0" mnemonicParsing="false" text="Logout" />
-            <Button fx:id="createNewAlbumButton" onAction="#handleCreateNewAlbum" layoutX="501.0" layoutY="146.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="125.0" text="Create New Album">
+            <Button fx:id="albumListButton" layoutX="30.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleAlbumListButton" text="&lt; Album List" />
+            <Button fx:id="logoutButton" layoutX="523.0" layoutY="36.0" mnemonicParsing="false" onAction="#handleLogoutButton" text="Logout" />
+            <Button fx:id="createNewAlbumButton" layoutX="501.0" layoutY="146.0" mnemonicParsing="false" onAction="#handleCreateNewAlbum" prefHeight="27.0" prefWidth="125.0" text="Create New Album">
                <font>
                   <Font size="12.0" />
                </font></Button>
-            <Button  fx:id="dateSearchButton" onAction="#handleDateSearchButton"  layoutX="253.0" layoutY="282.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="105.0" text="Date Search" />
-            <Button  fx:id="tagSearch2Button" onAction="#handleTagSearch2Button" layoutX="333.0" layoutY="323.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="156.0" text="Tag Search (2 pairs)" />
+            <Button fx:id="dateSearchButton" layoutX="125.0" layoutY="322.0" mnemonicParsing="false" onAction="#handleDateSearchButton" prefHeight="27.0" prefWidth="105.0" text="Date Search" />
+            <Button fx:id="tagSearch2Button" layoutX="408.0" layoutY="322.0" mnemonicParsing="false" onAction="#handleTagSearch2Button" prefHeight="27.0" prefWidth="156.0" text="Tag Search (2 pairs)" />
             <Text layoutX="289.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search">
                <font>
                   <Font size="21.0" />
                </font>
             </Text>
-            <Button  fx:id="tagSearch1Button" onAction="#handleTagSearch1Button" layoutX="133.0" layoutY="323.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="149.0" text="Tag Search (1 pair)" />
-            <TilePane fx:id="tilePane" layoutX="33.0" layoutY="82.0" prefHeight="182.0" prefWidth="459.0" />
+            <Button fx:id="tagSearch1Button" layoutX="246.0" layoutY="322.0" mnemonicParsing="false" onAction="#handleTagSearch1Button" prefHeight="27.0" prefWidth="149.0" text="Tag Search (1 pair)" />
+            <VBox layoutX="50.0" layoutY="82.0" prefHeight="200.0" prefWidth="426.0">
+               <children>
+                  <ScrollPane fx:id="scroller" hbarPolicy="NEVER" prefHeight="415.0" prefWidth="426.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <TilePane fx:id="tilePane" layoutY="9.0" prefHeight="182.0" prefWidth="407.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
       </children>
     </AnchorPane>
   </children>

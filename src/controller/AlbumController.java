@@ -136,6 +136,10 @@ public class AlbumController {
      * */
     @FXML
     ListView<String> tagListView;
+
+    @FXML
+    ScrollPane scroller;
+
     /**
      * Method to initialize controller items
      * */
@@ -151,10 +155,10 @@ public class AlbumController {
         // populate obsList
         obsList = FXCollections.observableArrayList(this.album.getPics());
         tilePane.setPrefColumns(4);
-        /*scroller.setFitToHeight(true);
+        scroller.setFitToHeight(true);
         scroller.setFitToWidth(true);
-        scroller.setContent(tilePane);*/
-
+        scroller.setContent(tilePane);
+        scroller.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
         // load photos into tilepane
         setTilePane();
     }
@@ -450,13 +454,12 @@ public class AlbumController {
 
         Label tagValue = new Label("\nTag Value");
         TextField valueField = new TextField();
-        ButtonType buttonAdd = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
 
         grid.addColumn(1, tagType, comboBox, tagValue, valueField);
 
         dialog.getDialogPane().setContent(grid);
         ButtonType saveButton = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().add(buttonAdd);
+        dialog.getDialogPane().getButtonTypes().add(saveButton);
 
         Optional<String> result = dialog.showAndWait();
 

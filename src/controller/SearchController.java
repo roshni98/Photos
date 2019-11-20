@@ -4,11 +4,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Album;
 import model.Photo;
@@ -17,6 +23,8 @@ import model.User;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 public class SearchController {
@@ -42,6 +50,9 @@ public class SearchController {
     @FXML
     TilePane tilePane;
 
+    @FXML
+    ScrollPane scroller;
+
     private User user;
     private ArrayList<Photo> userPhotos;
     private ObservableList<Photo> searchResults;
@@ -54,13 +65,20 @@ public class SearchController {
         this.tagNames = new ArrayList<>();
         loadTagsAndPhotos();
 
+        createNewAlbumButton.setVisible(false);
+        tilePane.setPrefColumns(4);
+        scroller.setFitToHeight(true);
+        scroller.setFitToWidth(true);
+        scroller.setContent(tilePane);
+        scroller.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
+
         primaryStage.setOnCloseRequest(event -> {
-            this.stop();  // Write all changes to data.json
+            this.stop();  // Write all changes
         });
     }
 
     public void stop(){
-
+        saveObject();
     }
 
     /**
@@ -111,6 +129,37 @@ public class SearchController {
 
         if(result.isPresent()) {
             // search functionality
+
+            // get values
+            String tagName = tagNameComboBox.getValue();
+            String tagValue = valueField.getText();
+
+            for(Photo photo : this.userPhotos){
+                HashMap<String, ArrayList<String>> tagMap = photo.getTags();
+                for(Map.Entry<String, ArrayList<String>> e : tagMap.entrySet()){
+                    if(e.getKey().equals(tagName)){ // check tagName
+                        for(String tag : e.getValue()){
+                            if(tag.equals(tagValue)){ // check tagValue
+                                if(!this.searchResults.contains(photo)){
+                                    this.searchResults.add(photo);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(this.searchResults.size() > 0){
+                createNewAlbumButton.setVisible(true);
+                System.out.println(this.searchResults.get(0).getPath());
+                // update tilepane
+                tilePane.getChildren().clear();
+                for(Photo photo : searchResults){
+                    addToTilePane(photo);
+                }
+
+            }else{
+                createNewAlbumButton.setVisible(false);
+            }
         }
     }
 
@@ -169,22 +218,193 @@ public class SearchController {
             String tagValue1 = valueField.getText();
 
             // and/or
-            String conjunction = group.getSelectedToggle().getUserData().toString();
+            RadioButton selectedRadioButton = (RadioButton) group.getSelectedToggle();
+            String conjunction = selectedRadioButton.getText();
 
             // key/val pair 2
             String tagName2 = tagNameComboBox2.getValue();
             String tagValue2 = valueField2.getText();
+
+            int numMatches = 1;
+            boolean isAdd = false;
+            if(conjunction.equals("And")){
+                isAdd = true;
+                numMatches = 2;
+            }
+
+            for(Photo photo : this.userPhotos){
+                HashMap<String, ArrayList<String>> tagMap = photo.getTags();
+                for(Map.Entry<String, ArrayList<String>> e : tagMap.entrySet()){
+                    if(e.getKey().equals(tagName1)){ // check tagName1
+                        for(String tag : e.getValue()){
+                            if(tag.equals(tagValue1)){ // check tagValue1
+                                numMatches--;
+                            }
+                        }
+                    }
+                    if(e.getKey().equals(tagName2)){ // check tagName2
+                        for(String tag : e.getValue()){
+                            if(tag.equals(tagValue2)){ // check tagValue2
+                                numMatches--;
+                            }
+                        }
+                    }
+                }
+                if(numMatches <= 0){
+                    if(!this.searchResults.contains(photo)){
+                        this.searchResults.add(photo);
+                    }
+                    if(isAdd){
+                        numMatches = 2;
+                    }else{
+                        numMatches = 1;
+                    }
+
+                }
+            }
+
+            if(this.searchResults.size() > 0){
+                createNewAlbumButton.setVisible(true);
+                System.out.println(this.searchResults.size());
+                System.out.println(this.searchResults.get(0).getPath());
+                // add all search results to tilepane
+                tilePane.getChildren().clear();
+                for(Photo photo : searchResults){
+                    addToTilePane(photo);
+                }
+            }else{
+                createNewAlbumButton.setVisible(false);
+            }
         }
     }
 
     @FXML
     public void handleDateSearchButton(){
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setContentText("Date Search");
+        dialog.setHeaderText("Date Search");
+        GridPane grid = new GridPane();
 
+        Label label = new Label("Enter desired start and end dates:\n\n");
+        Label startLabel = new Label("Start Date:");
+        DatePicker startDate = new DatePicker();
+        Label endLabel = new Label("End Date:");
+        DatePicker endDate = new DatePicker();
+
+        grid.addColumn(1, label, startLabel, startDate, endLabel, endDate);
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType saveButton = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(saveButton);
+
+        Optional<String> result = dialog.showAndWait();
+
+        if(result.isPresent()) {
+
+            LocalDate beg = startDate.getValue();
+            LocalDate end = endDate.getValue();
+
+            Date date1 = Date.from(beg.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date date2 = Date.from(end.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            for(Photo photo : userPhotos){
+                Date currPhotoDate = photo.getDate();
+                if(currPhotoDate.compareTo(date1) >= 0 && currPhotoDate.compareTo(date2) <= 0){
+                    if(!this.searchResults.contains(photo)){
+                        this.searchResults.add(photo);
+                    }
+                }
+            }
+
+            if(this.searchResults.size() > 0){
+                createNewAlbumButton.setVisible(true);
+                // add all search results to tilepane
+                tilePane.getChildren().clear();
+                for(Photo photo : searchResults){
+                    addToTilePane(photo);
+                }
+            }else{
+                createNewAlbumButton.setVisible(false);
+            }
+        }
+    }
+
+    /**
+     * Loads image of photo specified
+     * @param photo picture to be returned as image
+     * @return Image object created from given Photo objet
+     * */
+    private Image getPhotoImage(Photo photo){
+        File f = new File(photo.getPath());
+        if(f.exists()) {
+            return new Image("file:"+f.getAbsolutePath());
+        }
+        return null;
+    }
+
+    /**
+     * Adds thumbnail and caption of given Photo object to tilepane element
+     * @param photo current photo
+     * */
+    private void addToTilePane(Photo photo){
+        //currPhoto = photo;
+        VBox v = new VBox();
+        ImageView i = new ImageView();
+        System.out.println(getPhotoImage(photo));
+        i.setImage(getPhotoImage(photo));
+        i.setFitWidth(40);
+        i.setFitHeight(40);
+
+        // add imageview
+        v.getChildren().add(i);
+
+        // Set caption
+        Text caption = new Text(photo.getCaption());
+        caption.setStyle("-fx-font-size: 12");
+
+        v.getChildren().add(caption);
+        v.setAlignment(Pos.BASELINE_CENTER);
+        v.setSpacing(10);
+        v.setPadding(new Insets(25,30,30,30));
+        tilePane.getChildren().add(v);
     }
 
     @FXML
     public void handleCreateNewAlbum(){
+        Dialog<Album> dialog = new Dialog<>();
+        dialog.setContentText("Add Tag");
+        dialog.setHeaderText("Enter new album name:");
+        GridPane grid = new GridPane();
+        Label labelName = new Label("Name: ");
+        TextField textName= new TextField();
+        grid.add(labelName, 1, 1);
+        grid.add(textName, 2, 1);
+        dialog.getDialogPane().setContent(grid);
+        ButtonType buttonAdd = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(buttonAdd);
 
+        dialog.setResultConverter(b -> { return (b == buttonAdd) ? new Album(null, textName.getText()) : null;});
+        Optional<Album> result = dialog.showAndWait();
+
+        if(result.isPresent()) {
+            for(Album a: user.getAlbumList()){
+                if(a.getAlbumName().equals(result.get().getAlbumName())){
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setContentText("Album "+result.get().getAlbumName()+" already exists!");
+                    errorAlert.setTitle("Error adding album");
+                    errorAlert.showAndWait();
+                    return;
+                }
+            }
+            // add photos to album
+            Album newAlbum = result.get();
+            for(Photo photo : this.searchResults){
+                newAlbum.getPics().add(photo);
+            }
+
+            // add album to user's albums
+            user.getAlbumList().add(result.get());
+        }
     }
 
     /**
@@ -194,7 +414,7 @@ public class SearchController {
     public void handleLogoutButton(){
         // current user is no longer admin - redirect to login page
 
-        this.stop(); // write all changes to data.json
+        this.stop(); // write all changes
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();
@@ -259,16 +479,4 @@ public class SearchController {
             //e.printStackTrace();
         }
     }
-
-    /**
-     * Updates user object with latest album and photo updates
-     * */
-   /* private void updateUserList(){
-        for(int i =0; i< user.getAlbumList().size(); i++){
-            if(user.getAlbumList().get(i).getAlbumName().equals(album.getAlbumName())){
-                u.getAlbumList().set(i,this.album);
-                break;
-            }
-        }
-    }*/
 }
