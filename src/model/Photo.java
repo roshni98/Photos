@@ -52,7 +52,6 @@ public class Photo implements Serializable{
         //int day = cal.get(Calendar.DAY_OF_MONTH);
         //int year = cal.get(Calendar.YEAR);
         return cal.getTime();
-
     }
 
     public void setDate(Date d){
