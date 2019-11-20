@@ -405,9 +405,34 @@ public class SearchController {
                 newAlbum.getPics().add(photo);
             }
 
+            // update album's min and max dates
+            updateAlbumDates(newAlbum);
+
             // add album to user's albums
-            user.getAlbumList().add(result.get());
+            user.getAlbumList().add(newAlbum);
         }
+    }
+
+    private void updateAlbumDates(Album album){ // update album min and max dates
+
+        if(album.getPics().size() == 0){ // empty album; reset dates
+            album.setMin_date(new Date(Long.MIN_VALUE));
+            album.setMax_date(new Date(Long.MAX_VALUE));
+            return;
+        }
+
+        Date minDate = album.getPics().get(0).getDate();
+        Date maxDate = album.getPics().get(0).getDate();
+        for(Photo photo : album.getPics()){
+            if(photo.getDate().compareTo(minDate) < 0){
+                minDate = photo.getDate();
+            }else if(photo.getDate().compareTo(maxDate) > 0){
+                maxDate = photo.getDate();
+            }
+        }
+
+        album.setMin_date(minDate);
+        album.setMax_date(maxDate);
     }
 
     /**

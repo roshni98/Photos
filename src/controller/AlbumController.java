@@ -659,6 +659,7 @@ public class AlbumController {
         this.album.setMin_date(minDate);
         this.album.setMax_date(maxDate);
     }
+
     /**
      * Serializes user object
      * */
