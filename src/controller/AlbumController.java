@@ -103,9 +103,6 @@ public class AlbumController {
     @FXML
     Text albumNameText;
 
-    //@FXML
-   // ScrollPane scroller;
-
     /**
      * List of photos in album
      * */
@@ -137,13 +134,21 @@ public class AlbumController {
     @FXML
     ListView<String> tagListView;
 
+    /**
+     * Allows scrolling through photos in album
+     * */
     @FXML
     ScrollPane scroller;
 
+    /**
+     * All tag names this user has used on a photo
+     * */
     private ArrayList<String> tagNames; // current user's tags
 
     /**
      * Method to initialize controller items
+     * @param u current user
+     * @param selectedAlbumName current album
      * */
     public void init(User u, String selectedAlbumName){
         this.u = u;
@@ -171,6 +176,7 @@ public class AlbumController {
 
     /**
      * Start method to set up login UI and data structures
+     * @param primaryStage main UI stage
      * */
     public void start(Stage primaryStage){
         copyPhotoButton.setVisible(false);
@@ -200,7 +206,7 @@ public class AlbumController {
     /**
      * Load all user tags into a list.
      * */
-    public void loadAllTags(){
+    private void loadAllTags(){
 
         ArrayList<Album> albumList = (ArrayList) this.u.getAlbumList();
 
@@ -224,19 +230,25 @@ public class AlbumController {
         currPhoto = photo;
         VBox v = new VBox();
         ImageView i = new ImageView();
-        System.out.println(getPhotoImage(photo) == null);
+        //System.out.println(getPhotoImage(photo) == null);
         i.setImage(getPhotoImage(photo));
         i.setFitWidth(40);
         i.setFitHeight(40);
         i.setOnMouseClicked(event ->{
             currPhoto = photo;
             // make appropriate UI buttons visible
+            // make appropriate UI buttons visible
             copyPhotoButton.setVisible(true);
             movePhotoButton.setVisible(true);
             deletePhotoButton.setVisible(true);
             addTagButton.setVisible(true);
-            deleteTagButton.setVisible(true);
             editPhotoButton.setVisible(true);
+            deleteTagButton.setVisible(true);
+            /*if(this.tags.size() > 0){
+                deleteTagButton.setVisible(true);
+            }else{
+                deleteTagButton.setVisible(false);
+            }*/
 
             // set tag list to selected photo's tags
             setTagListView(photo); // set tags obslist
@@ -275,7 +287,7 @@ public class AlbumController {
      * @return Image object created from given Photo objet
      * */
     private Image getPhotoImage(Photo photo){
-        System.out.println("path: "+photo.getPath());
+        //System.out.println("path: "+photo.getPath());
         File f = new File(photo.getPath());
         if(f.exists()) {
             return new Image("file:"+f.getAbsolutePath());
@@ -287,6 +299,7 @@ public class AlbumController {
      * Allows user to update caption if they click it
      * if user clicks photo caption in tilepane, they may rename
      * @param selected currently selected photo
+     * @return new caption
      * */
     private String updateCaption(Photo selected){
         Dialog<String> dialog = new Dialog<>();
@@ -316,24 +329,25 @@ public class AlbumController {
      * Delete photo from album
      * */
     @FXML
-    public void handleDeletePhotoButton(){
+    private void handleDeletePhotoButton(){
         Optional<ButtonType> result = Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to DELETE this photo?", "Confirmation Dialog");
         if(result.isPresent() && result.get() == ButtonType.OK){
+
             deletePhoto(currPhoto);
-            if(obsList.size() == 0){
-                copyPhotoButton.setVisible(false);
-                movePhotoButton.setVisible(false);
-                deletePhotoButton.setVisible(false);
-                addTagButton.setVisible(false);
-                deleteTagButton.setVisible(false);
-                editPhotoButton.setVisible(false);
-            }
+            copyPhotoButton.setVisible(false);
+            movePhotoButton.setVisible(false);
+            deletePhotoButton.setVisible(false);
+            addTagButton.setVisible(false);
+            deleteTagButton.setVisible(false);
+            editPhotoButton.setVisible(false);
+
         }
     }
 
     /**
      * Helper for deleting
      * Removes photo from observable list, resets tilepane, removes photo from album
+     * @param photo photo to be deleted
      * */
     private void deletePhoto(Photo photo) {
         // remove from observable list
@@ -344,13 +358,17 @@ public class AlbumController {
 
         // remove from album
         this.album.getPics().remove(photo);
+
+        // clear tags list and taglistview
+        this.tags.clear();
+        tagListView.setItems(this.tags);
     }
 
     /**
      * Adds photo to album
      * */
     @FXML
-    public void handleAddPhotoButton() throws IOException {
+    private void handleAddPhotoButton() throws IOException {
 
         Stage stage = (Stage) addPhotoButton.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
@@ -402,7 +420,7 @@ public class AlbumController {
      * Copy photo from this album to another album specific by user
      * */
     @FXML
-    public void handleCopyPhotoButton(){
+    private void handleCopyPhotoButton(){
         changePhotoLoc(false);
     }
 
@@ -410,7 +428,7 @@ public class AlbumController {
      * Move photo from this album to another album specific by user
      * */
     @FXML
-    public void handleMovePhotoButton(){
+    private void handleMovePhotoButton(){
         changePhotoLoc(true);
     }
 
@@ -441,21 +459,75 @@ public class AlbumController {
 
         Optional<String> result = dialog.showAndWait();
 
-        if(result.isPresent()) { // result: album name
+        if(result.isPresent()) {
 
-            if(isMove){ // delete photo from old album, observable list
-                deletePhoto(currPhoto);
-            }
+            String moveToAlbum = comboBox.getValue().toString(); // get album name where photo will be copied/moved
 
             // add to new album
-            String newAlbum = comboBox.getValue().toString();
-            System.out.println("newAlbum: "+newAlbum);
             for(Album album : u.getAlbumList()){
-                if(album.getAlbumName().equals(newAlbum)){
-                    album.getPics().add(currPhoto);
+                if(album.getAlbumName().equals(moveToAlbum)){
+                    ArrayList<Photo> moveToAlbumPics = album.getPics();
+                    if(isDuplicatePhoto(currPhoto, moveToAlbumPics)){ // if photo already in album
+                        // error: cannot copy/add add duplicate
+                        Utils.handleDialog(Alert.AlertType.ERROR, "Attempted to add a duplicate photo to another folder.", "Duplicate detected");
+                        return;
+                    }else{
+                        if(isMove){ // delete photo from old album, observable list
+                            deletePhoto(currPhoto);
+                            album.getPics().add(currPhoto);
+                        }else{ // copy
+                            String caption = currPhoto.getCaption();
+                            String path = currPhoto.getPath();
+                            Date date = currPhoto.getDate();
+                            HashMap<String, ArrayList<String>> tagMapCopy = returnTagMapCopy(currPhoto.getTags());
+
+                            Photo copy = new Photo(caption, path);
+                            copy.setDate(date);
+                            copy.setTags(tagMapCopy);
+                            album.getPics().add(copy);
+                        }
+                    }
                 }
             }
+
+            // confirmation dialog
+            if(isMove){ // moved
+                Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Photo successfully moved to album \""+moveToAlbum+"\"", "Confirmation Dialog");
+            }else{ // copied
+                Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Photo successfully copied to album \""+moveToAlbum+"\"", "Confirmation Dialog");
+            }
+
+            saveObject();
+            //setTilePane();
         }
+    }
+
+    /**
+     * Tells whether a photo is in an album
+     * @param photo Photo to search for in album
+     * @param moveToAlbumPics List of pictures in a given album
+     * @return whether photo is in the album
+     * */
+    private boolean isDuplicatePhoto(Photo photo, ArrayList<Photo> moveToAlbumPics){
+        for(Photo p : moveToAlbumPics){
+            if (photo.getPath().equals(p.getPath())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a copy of the given hashmap.
+     * @param tagMap
+     * @return copy of parameter
+     * */
+    private HashMap<String, ArrayList<String>> returnTagMapCopy(HashMap<String, ArrayList<String>> tagMap){
+        HashMap<String, ArrayList<String>> copy = new HashMap<>();
+        for(Map.Entry<String, ArrayList<String>> e : tagMap.entrySet()){
+            copy.put(e.getKey(), e.getValue());
+        }
+        return copy;
     }
 
     /**
@@ -463,7 +535,7 @@ public class AlbumController {
      * When button is clicked, text field pops up to allow user to type in tag.
      * */
     @FXML
-    public void handleAddTagButton(){
+    private void handleAddTagButton(){
         Dialog<String> dialog = new Dialog<>();
         dialog.setContentText("Add Tag");
         dialog.setHeaderText("Enter desired tag: ");
@@ -471,9 +543,15 @@ public class AlbumController {
 
         Label tagType = new Label("Tag Type");
         ComboBox<String> comboBox = new ComboBox<>();
-        comboBox.setPromptText("Choose a tag type");
+        comboBox.setPromptText("Choose or add a tag type");
         comboBox.setEditable(true); // user can add their own tag type
-        comboBox.getItems().addAll(this.tagNames);
+        comboBox.getItems().add("Location"); // default tag names
+        comboBox.getItems().add("Person");
+        for(String tagName : this.tagNames){ // add any other tag names user has
+            if(!comboBox.getItems().contains(tagName)){
+                comboBox.getItems().add(tagName);
+            }
+        }
         comboBox.setVisibleRowCount(3);
 
         Label tagValue = new Label("\nTag Value");
@@ -514,18 +592,32 @@ public class AlbumController {
             value.add(val);
             photoTags.put(key, value);
 
+            // add tag to tagName list
+            if(!this.tagNames.contains(key)){
+                this.tagNames.add(key);
+            }
+
             // add tag to obs list (tagListView)
             this.tags.add(key+" - "+val);
             tagListView.setItems(this.tags); // set listview to obs list
             tagListView.getSelectionModel().select(this.tags.size() - 1);
-        }
 
+            // reset UI
+            deleteTagButton.setVisible(true);
+        }
     }
 
+    /**
+     * Tells whether a tag is a duplicate of the tags on a photo
+     * @param key key in tag key-value pair
+     * @param value value in tag key-value pair
+     * @param tags list of tags on a photo
+     * @return whether tag is a duplicate on the photo
+     * */
     private boolean isDuplicateTag(String key, String value, HashMap<String, ArrayList<String>> tags){
         for(Map.Entry<String, ArrayList<String>> e : tags.entrySet()){
             for(String tag : e.getValue()){
-                if(e.getKey().equals(key) && e.getValue().equals(value)){
+                if(e.getKey().equals(key) && tag.equals(value)){
                     return true;
                 }
             }
@@ -538,12 +630,18 @@ public class AlbumController {
      * When button is clicked, text field pops up to allow user to type in tag.
      * */
     @FXML
-    public void handleDeleteTagButton(){
+    private void handleDeleteTagButton(){
+        int tagIndex = tagListView.getSelectionModel().getSelectedIndex();
+        if(tagIndex < 0){ // nothing selected or in list
+            Utils.handleDialog(Alert.AlertType.ERROR, "Cannot delete from an empty list.", "Empty tag list");
+            return;
+        }
+
         Optional<ButtonType> result = Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to DELETE this tag?", "Confirmation Dialog");
 
         if(result.isPresent() && result.get() == ButtonType.OK){
 
-            int tagIndex = tagListView.getSelectionModel().getSelectedIndex();
+            //System.out.println(tagIndex);
 
             String[] pair = tags.get(tagIndex).split(" - ");
 
@@ -577,6 +675,12 @@ public class AlbumController {
 
             // reset listview
             tagListView.setItems(this.tags);
+
+            // select another tag
+            if(tags.size() > 0){
+                if(tagIndex == 0) tagIndex = 1;
+                tagListView.getSelectionModel().select(tagIndex - 1);
+            }
         }
     }
 
@@ -584,7 +688,7 @@ public class AlbumController {
      * Initialize observable list for current photo
      * @param photo current photo
      * */
-    public void setTagListView(Photo photo){
+    private void setTagListView(Photo photo){
         // load photo tags into observable list
         if(this.tags != null){
             this.tags.clear();
@@ -603,7 +707,7 @@ public class AlbumController {
      * Redirects user to single photo view
      * */
     @FXML
-    public void handleEditPhotoButton(){
+    private void handleEditPhotoButton(){
         this.stop(); // write all changes to data.json
         Parent root;
         Stage stage;
@@ -640,33 +744,11 @@ public class AlbumController {
         }
     }
 
-    private void updateAlbumDates(){ // update album min and max dates
-
-        if(this.album.getPics().size() == 0){ // empty album; reset dates
-            this.album.setMin_date(new Date(Long.MIN_VALUE));
-            this.album.setMax_date(new Date(Long.MAX_VALUE));
-            return;
-        }
-
-        Date minDate = this.album.getPics().get(0).getDate();
-        Date maxDate = this.album.getPics().get(0).getDate();
-        for(Photo photo : this.album.getPics()){
-            if(photo.getDate().compareTo(minDate) < 0){
-                minDate = photo.getDate();
-            }else if(photo.getDate().compareTo(maxDate) > 0){
-                maxDate = photo.getDate();
-            }
-        }
-
-        this.album.setMin_date(minDate);
-        this.album.setMax_date(maxDate);
-    }
-
     /**
      * Serializes user object
      * */
     private void saveObject(){
-        updateAlbumDates();
+        Utils.updateAlbumDates(this.album);
         updateUserList();
         File file = new File(this.u.getUsername()+".txt");
         if(file.exists()){
@@ -688,7 +770,7 @@ public class AlbumController {
      * Redirects user to album list from single album view
      * */
     @FXML
-    public void handleAlbumListButton(){
+    private void handleAlbumListButton(){
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();
@@ -713,7 +795,7 @@ public class AlbumController {
      * Logs out user and redirects them to login page
      * */
     @FXML
-    public void handleLogoutButton(){
+    private void handleLogoutButton(){
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();

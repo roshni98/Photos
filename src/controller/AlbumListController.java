@@ -1,3 +1,6 @@
+/**
+ * @author Roshni Shah
+ * */
 package controller;
 
 import javafx.collections.FXCollections;
@@ -33,31 +36,66 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @class AlbumListController Displays list of albums and allows user to edit them
+ * */
 public class AlbumListController {
+
+    /**
+     * Button that allows user to log out
+     * */
     @FXML
     Button logoutButton;
 
+    /**
+     * Button that allows user to create a new album
+     * */
     @FXML
     Button createAlbumButton;
 
+    /**
+     * Button that allows user to search their photos
+     * */
     @FXML
     Button searchButton;
 
+    /**
+     * Main UI panel
+     * */
     @FXML
     AnchorPane rootPane;
 
+    /**
+     * UI panel where albums are displayed
+     * */
     @FXML
     TilePane displayAlbumTile;
 
-
+    /**
+     * Scroller for album display
+     * */
     @FXML
     ScrollPane scroller;
-    //need observable list for tile pane to update list of albums
+
+    /**
+     * Observable list for tile pane to update list of albums
+     * */
     private ObservableList<Album> obsList;
+
+    /**
+     * Current user
+     * */
     private User user;
+
+    /**
+     * List of current user's albums
+     * */
     private List<Album> albums;
 
-    // allow's us to pass albums object from previous page
+    /**
+     * Method to initialize controller items
+     * @param u current user
+     * */
     public void init(User u) {
         this.user = u;
         this.albums = u.getAlbumList();
@@ -82,23 +120,33 @@ public class AlbumListController {
         updateTilePane();
     }
 
+    /**
+     * Start method to set up login UI and data structures
+     * @param primaryStage stage for all page elements
+     * */
     public void start(Stage primaryStage){
         //VBox box = new VBox();
         // load existing albums
         // initialize list of albums (to maintain in memory)
         primaryStage.setTitle("Album List");
-
+        saveObject();
         primaryStage.setOnCloseRequest(event -> {
             this.stop();  // Write all changes to data.json
         });
     }
 
-    //  TODO
+    /**
+     * Method carried out on exit
+     * Serializes new information
+     * */
     private void stop(){
         saveObject();
     }
 
-    //load's folder icon
+    /**
+     * loads folder icon for album icon in tilepane
+     * @return Image object of folder icon
+     * */
     private Image albumFolderImage(){
         String folderImgFilePath= "/folder.png";
         File directory = new File("./");
@@ -110,7 +158,9 @@ public class AlbumListController {
         return null;
     }
 
-    //refreshes tile pane
+    /**
+     * Initializes tilepane to display all albums
+     * */
     private void updateTilePane(){
         if(obsList.size() > 0) {
             for (Album a : obsList) {
@@ -119,7 +169,9 @@ public class AlbumListController {
         }
     }
 
-    // delete album
+    /**
+     * Deletes album
+     * */
     private void delete(Album a){
         for(int i=0;i<obsList.size();i++){
            if(a.getAlbumName().equals(obsList.get(i).getAlbumName())){
@@ -129,7 +181,10 @@ public class AlbumListController {
         }
     }
 
-    // add's each album to tile pane one by one
+    /**
+     * Adds one album to tile pane
+     * @param a album to be added to display
+     * */
     private void addToTilePane(Album a){
         VBox v = new VBox();
         ImageView i = new ImageView();
@@ -164,7 +219,9 @@ public class AlbumListController {
         displayAlbumTile.getChildren().add(v);
     }
 
-    // get latest albums and update user object
+    /**
+     * Get latest albums and update user object
+     * */
     private void updateUserList(){
         ArrayList<Album> updatedList = new ArrayList<>();
         for(Album a : obsList){
@@ -173,7 +230,9 @@ public class AlbumListController {
         this.user.setAlbumList(updatedList);
     }
 
-    //save object to file
+    /**
+     * Save all object to user's file
+     * */
     private void saveObject(){
         updateUserList();
         File file = new File(this.user.getUsername()+".txt");
@@ -192,9 +251,11 @@ public class AlbumListController {
         }
     }
 
-
+    /**
+     * Allows user to log out
+     * */
     @FXML
-    public void handleLogout() { //directs to login page
+    private void handleLogout() { //directs to login page
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();
@@ -215,6 +276,11 @@ public class AlbumListController {
         }
     }
 
+    /**
+     * Redirects to single album view
+     * @param imageView element in stage to be changed
+     * @param albumName album to be viewed in single album view
+     * */
     private void goToAlbumPage(ImageView imageView, String albumName){
         Parent root;
         Stage stage;
@@ -238,8 +304,11 @@ public class AlbumListController {
         }
     }
 
+    /**
+     * Redirects to search page
+     * */
     @FXML
-    public void handleSearchButton(){ //directs to search page
+    private void handleSearchButton(){
         try {
             //VBox pane = FXMLLoader.load(getClass().getResource("../view/search.fxml"));
             //rootPane.getChildren().setAll(pane);
@@ -267,7 +336,10 @@ public class AlbumListController {
         }
     }
 
-    // if user clicks filename in tilepane, they may rename
+    /**
+     * Change album name by clicking its name
+     * @param selected album to be updated
+     * */
     private String updateAlbum(Album selected){
         Dialog <String> dialog = new Dialog<>();
         dialog.setContentText("Dialog");
@@ -299,8 +371,11 @@ public class AlbumListController {
         return  selected.getAlbumName();
     }
 
+    /**
+     * Allows user to create a new album
+     * */
     @FXML
-    public void createAlbum(){
+    private void createAlbum(){
         //if the user clicks the create album
         // put folder image down in correct spot and refresh name
         Dialog<Album> dialog = new Dialog<>();

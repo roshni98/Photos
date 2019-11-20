@@ -1,3 +1,6 @@
+/**
+ * @author Roshni Shah
+ * */
 package controller;
 
 import javafx.beans.Observable;
@@ -24,48 +27,102 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
 
-
+/**
+ * @class EditPhotoController Allows user to view one photo at a time and scroll through an album
+ * */
 public class EditPhotoController {
+
+    /**
+     * Changes view to previous photo in album
+     * */
     @FXML
     Button previousButton;
 
+    /**
+     * Changes view to next photo in album
+     * */
     @FXML
     Button nextButton;
 
+    /**
+     * Allows user to logout
+     * */
     @FXML
     Button logoutButton;
 
+    /**
+     * Changes view to album view
+     * */
     @FXML
     Button albumListButton;
 
+    /**
+     * Label for photo tags
+     * */
     @FXML
     Text tagText;
 
+    /**
+     * Label for photo date captured
+     * */
     @FXML
     Text dateText;
 
+    /**
+     * Label for photo caption
+     * */
     @FXML
     Text captionText;
 
+    /**
+     * Main UI panel
+     * */
     @FXML
     AnchorPane rootPane;
 
+    /**
+     * ImageView representing photo
+     * */
     @FXML
     private ImageView imgView;
 
+    /**
+     * List view of photo tags
+     * */
     @FXML
     ListView<String> tagList;
 
+    /**
+     * List of photos in current album
+     * */
     private List<Photo> photoList;
+
+    /**
+     * Index of current photo in album
+     * */
     private int selectedIndex;
+
+    /**
+     * Current user
+     * */
     private User u;
+
+    /**
+     * Name of current album
+     * */
     private String albumName;
 
 //need
 //list of photos in album
 // photo clicked on by index
 
-
+    /**
+     * Method to initialize controller items
+     * @param pics list of photos in the same album as current photo
+     * @param u current user
+     * @param albumName name of current album
+     * @param index index of current photo in album
+     * */
     public void init(ArrayList<Photo> pics, User u, String albumName, int index) {
         this.photoList = pics;
         this.u = u;
@@ -74,7 +131,12 @@ public class EditPhotoController {
         display();
     }
 
-    public Image getAbsolutePath(String urlp){
+    /**
+     * Returns Image object of a photo given its path
+     * @param urlp absolute path of current photo
+     * @return Image object created from parameter
+     * */
+    private Image getAbsolutePath(String urlp){
         File directory = new File(urlp);
         String path = directory.getAbsolutePath();
         File f = new File(path);
@@ -84,8 +146,11 @@ public class EditPhotoController {
         return null;
     }
 
+    /**
+     * Changes view to previous photo in album
+     * */
     @FXML
-    public void handlePrevButton(){
+    private void handlePrevButton(){
         if(selectedIndex == 0){
             selectedIndex = photoList.size()-1;
         }
@@ -95,8 +160,11 @@ public class EditPhotoController {
         display();
     }
 
+    /**
+     * Changes view to next photo in album
+     * */
     @FXML
-    public void handleNextButton(){
+    private void handleNextButton(){
         if(selectedIndex >= 0  && selectedIndex < this.photoList.size()-1){
             selectedIndex++;
         }
@@ -106,8 +174,11 @@ public class EditPhotoController {
         display();
     }
 
+    /**
+     * Allows user to logout
+     * */
     @FXML
-    public void handleLogoutButton(){
+    private void handleLogoutButton(){
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();
@@ -127,8 +198,11 @@ public class EditPhotoController {
         }
     }
 
+    /**
+     * Takes user back to album view
+     * */
     @FXML
-    public void handleAlbumButton(){
+    private void handleAlbumButton(){
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();
@@ -149,12 +223,10 @@ public class EditPhotoController {
         }
     }
 
-    public void start(Stage primaryStage, Photo photo, List<String> pics, int count_place) {
-                //List of pics and using count to keep track of which pic on
-
-    }
-
-    public void tagList(){
+    /**
+     * Constructs photo's tag list for display
+     * */
+    private void tagList(){
         Photo p = photoList.get(selectedIndex);
         List<String> tagDisplay = new ArrayList<>();
         HashMap<String, ArrayList<String>> tagsMap = p.getTags();
@@ -165,15 +237,23 @@ public class EditPhotoController {
         tagList.setItems(tagDis);
     }
 
-    public void settingDateText(){
+    /**
+     * Sets date text for display
+     * */
+    private void settingDateText(){
         dateText.setText("Date: "+photoList.get(selectedIndex).getDate().toString());
     }
 
-    public void settingCaptionText(){
+    /**
+     * Sets caption text for display
+     * */
+    private void settingCaptionText(){
         captionText.setText("Caption: "+photoList.get(selectedIndex).getCaption());
-
     }
 
+    /**
+     * Displays photo and its information
+     * */
     private void display(){
         if(selectedIndex >= 0  && selectedIndex < this.photoList.size()){
             imgView.setImage(getAbsolutePath(photoList.get(selectedIndex).getPath()));
@@ -182,6 +262,5 @@ public class EditPhotoController {
             settingDateText();
         }
     }
-
 }
 

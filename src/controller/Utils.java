@@ -3,6 +3,8 @@ package controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import model.Album;
+import model.Photo;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -34,38 +37,25 @@ public class Utils {
         return errorAlert.showAndWait();
     }
 
-// CAN PROBABLY DELETE
+    public static void updateAlbumDates(Album a){ // update album min and max dates
 
-    /**
-     * Checks if user is currently in data.json
-     * @param user the user you want to check for in data.json
-     * @return whether user already has a serializable file
-     * */
-    public boolean userExists(String user) {
-        JSONParser parser = new JSONParser();
-        try {
-            File fil = new File("data.json"); //path of json
-            if (fil.length() == 0) return false; //file empty, don't load anything
-            FileReader fr = new FileReader(fil);
-            Object obj = parser.parse(fr);
-            JSONArray jsonArray = (JSONArray) obj;
-            Iterator<JSONObject> iterator = jsonArray.iterator();
-
-            while (iterator.hasNext()) { // looking through users
-                JSONObject currentAccount = iterator.next(); // current user
-                String currUser = (String) currentAccount.get("User");
-                if(user.equals(currUser)){
-                    return true;
-                }
-            }
-            return false;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(a.getPics().size() == 0){ // empty album; reset dates
+            a.setMin_date(new Date(Long.MIN_VALUE));
+            a.setMax_date(new Date(Long.MAX_VALUE));
+            return;
         }
-        return false;
+
+        Date minDate = a.getPics().get(0).getDate();
+        Date maxDate = a.getPics().get(0).getDate();
+        for(Photo photo : a.getPics()){
+            if(photo.getDate().compareTo(minDate) < 0){
+                minDate = photo.getDate();
+            }else if(photo.getDate().compareTo(maxDate) > 0){
+                maxDate = photo.getDate();
+            }
+        }
+
+        a.setMin_date(minDate);
+        a.setMax_date(maxDate);
     }
 }

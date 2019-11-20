@@ -5,6 +5,10 @@ import java.io.Serializable;
 
 
 public class Photo implements Serializable{
+    public void setTags(HashMap<String, ArrayList<String>> tags) {
+        this.tags = tags;
+    }
+
     HashMap<String, ArrayList<String>> tags;
     String caption;
     Date date;

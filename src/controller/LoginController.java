@@ -59,6 +59,7 @@ public class LoginController {
 
     /**
      * Start method to set up login UI and data structures
+     * @param primaryStage main UI stage
      * */
     public void start(Stage primaryStage) throws IOException {
 
@@ -73,7 +74,8 @@ public class LoginController {
      * Redirects to album list if non-admin user.
      * Redirects to admin panel if admin.
      */
-    public void handleLoginButton() throws IOException {
+    @FXML
+    private void handleLoginButton() throws IOException {
         if(userObjectList == null){
             userObjectList = new ArrayList<>();
         }
@@ -142,6 +144,7 @@ public class LoginController {
 
     /**
      * Creates file for user's serialized information (albums and photos)
+     * @param username username of user
      * */
     private void createLoadUser(String username) {
         try {

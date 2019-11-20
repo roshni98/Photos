@@ -1,3 +1,6 @@
+/**
+ * @author Amulya Mummaneni
+ * */
 package controller;
 
 import javafx.collections.FXCollections;
@@ -27,37 +30,84 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
+/**
+ * @class SearchController allows user to search all their photos using different parameters
+ * */
 public class SearchController {
 
+    /**
+     * Button that takes user back to album list
+     * */
     @FXML
     Button albumListButton;
 
+    /**
+     * Button that allowed user to create a new album from the most recent search results
+     * */
     @FXML
     Button createNewAlbumButton;
 
+    /**
+     * Button that allows user to search photos by date range
+     * */
     @FXML
     Button dateSearchButton;
 
+    /**
+     * Button that allows user to search photos by 1 tag key-value pair
+     * */
     @FXML
     Button tagSearch1Button;
 
+    /**
+     * Button that allows user to search photos by 2 tag key-value pairs
+     * */
     @FXML
     Button tagSearch2Button;
 
+    /**
+     * Button that allows user to log out
+     * */
     @FXML
     Button logoutButton;
 
+    /**
+     * Main UI area for photo display
+     * */
     @FXML
     TilePane tilePane;
 
+    /**
+     * Allows scrolling through photos in album
+     * */
     @FXML
     ScrollPane scroller;
 
+    /**
+     * Current user
+     * */
     private User user;
+
+    /**
+     * Current user's photos
+     * */
     private ArrayList<Photo> userPhotos;
+
+    /**
+     * List that holds search results for each search
+     * */
     private ObservableList<Photo> searchResults;
+
+    /**
+     * List of all tagnames user is currently using
+     * */
     private ArrayList<String> tagNames;
 
+    /**
+     * Start method to set up login UI and data structures
+     * @param primaryStage main UI stage
+     * @param user current user
+     * */
     public void start(Stage primaryStage, User user){
         this.user = user;
         this.searchResults = FXCollections.observableArrayList();
@@ -77,20 +127,24 @@ public class SearchController {
         });
     }
 
-    public void stop(){
+    /**
+     * Method carried out on exit
+     * Serializes new information
+     * */
+    private void stop(){
         saveObject();
     }
 
     /**
      * Load all user photos into one list and all user tags into another.
      * */
-    public void loadTagsAndPhotos(){
+    private void loadTagsAndPhotos(){
 
         ArrayList<Album> albumList = (ArrayList) this.user.getAlbumList();
 
         for(Album album : albumList){ // for each album, go through tags
             for(Photo photo : album.getPics()){ // for each photo, go through tags
-                if(!this.userPhotos.contains(photo)){
+                if(!isDuplicatePhoto(photo, this.userPhotos)){
                     this.userPhotos.add(photo);
                 }
                 for(Map.Entry<String, ArrayList<String>> e : photo.getTags().entrySet()){ // add unique tags to tagNames list
@@ -103,8 +157,11 @@ public class SearchController {
         }
     }
 
+    /**
+     * Allows user to search photos with one tag
+     * */
     @FXML
-    public void handleTagSearch1Button(){
+    private void handleTagSearch1Button(){
         Dialog<String> dialog = new Dialog<>();
         dialog.setContentText("Dialog");
         dialog.setHeaderText("Tag Search - 1 key/value pair");
@@ -135,6 +192,8 @@ public class SearchController {
             String tagName = tagNameComboBox.getValue();
             String tagValue = valueField.getText();
 
+            this.searchResults.clear();
+
             for(Photo photo : this.userPhotos){
                 HashMap<String, ArrayList<String>> tagMap = photo.getTags();
                 for(Map.Entry<String, ArrayList<String>> e : tagMap.entrySet()){
@@ -151,7 +210,7 @@ public class SearchController {
             }
             if(this.searchResults.size() > 0){
                 createNewAlbumButton.setVisible(true);
-                System.out.println(this.searchResults.get(0).getPath());
+                //System.out.println(this.searchResults.get(0).getPath());
                 // update tilepane
                 tilePane.getChildren().clear();
                 for(Photo photo : searchResults){
@@ -164,8 +223,26 @@ public class SearchController {
         }
     }
 
+    /**
+     * Tells whether a photo is in an album
+     * @param photo Photo to search for in album
+     * @param moveToAlbumPics List of pictures in a given album
+     * @return whether photo is in the album
+     * */
+    private boolean isDuplicatePhoto(Photo photo, List<Photo> moveToAlbumPics){
+        for(Photo p : moveToAlbumPics){
+            if (photo.getPath().equals(p.getPath())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Allows user to search photos with two tag pairs
+     * */
     @FXML
-    public void handleTagSearch2Button(){
+    private void handleTagSearch2Button(){
         Dialog<String> dialog = new Dialog<>();
         dialog.setContentText("Dialog");
         dialog.setHeaderText("Tag Search - 2 key/value pairs");
@@ -235,6 +312,7 @@ public class SearchController {
                 numMatches = 2;
             }
 
+            this.searchResults.clear();
             for(Photo photo : this.userPhotos){
                 HashMap<String, ArrayList<String>> tagMap = photo.getTags();
                 for(Map.Entry<String, ArrayList<String>> e : tagMap.entrySet()){
@@ -254,7 +332,7 @@ public class SearchController {
                     }
                 }
                 if(numMatches <= 0){
-                    if(!this.searchResults.contains(photo)){
+                    if(!isDuplicatePhoto(photo, this.searchResults)){
                         this.searchResults.add(photo);
                     }
                     if(isAdd){
@@ -268,8 +346,8 @@ public class SearchController {
 
             if(this.searchResults.size() > 0){
                 createNewAlbumButton.setVisible(true);
-                System.out.println(this.searchResults.size());
-                System.out.println(this.searchResults.get(0).getPath());
+                //System.out.println(this.searchResults.size());
+                //System.out.println(this.searchResults.get(0).getPath());
                 // add all search results to tilepane
                 tilePane.getChildren().clear();
                 for(Photo photo : searchResults){
@@ -281,8 +359,11 @@ public class SearchController {
         }
     }
 
+    /**
+     * Allows user to search photos with a date range
+     * */
     @FXML
-    public void handleDateSearchButton(){
+    private void handleDateSearchButton(){
         Dialog<String> dialog = new Dialog<>();
         dialog.setContentText("Date Search");
         dialog.setHeaderText("Date Search");
@@ -310,10 +391,11 @@ public class SearchController {
             Date date1 = Date.from(beg.atStartOfDay(ZoneId.systemDefault()).toInstant());
             Date date2 = Date.from(end.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
+            this.searchResults.clear();
             for(Photo photo : userPhotos){
                 Date currPhotoDate = photo.getDate();
                 if(currPhotoDate.compareTo(date1) >= 0 && currPhotoDate.compareTo(date2) <= 0){
-                    if(!this.searchResults.contains(photo)){
+                    if(!isDuplicatePhoto(photo, this.searchResults)){
                         this.searchResults.add(photo);
                     }
                 }
@@ -353,7 +435,7 @@ public class SearchController {
         //currPhoto = photo;
         VBox v = new VBox();
         ImageView i = new ImageView();
-        System.out.println(getPhotoImage(photo));
+        //System.out.println(getPhotoImage(photo));
         i.setImage(getPhotoImage(photo));
         i.setFitWidth(40);
         i.setFitHeight(40);
@@ -372,8 +454,11 @@ public class SearchController {
         tilePane.getChildren().add(v);
     }
 
+    /**
+     * Allows user to create a new album from the latest search results
+     * */
     @FXML
-    public void handleCreateNewAlbum(){
+    private void handleCreateNewAlbum(){
         Dialog<Album> dialog = new Dialog<>();
         dialog.setContentText("Add Tag");
         dialog.setHeaderText("Enter new album name:");
@@ -413,6 +498,10 @@ public class SearchController {
         }
     }
 
+    /**
+     * Updates album date range
+     * @param album album to be updated
+     * */
     private void updateAlbumDates(Album album){ // update album min and max dates
 
         if(album.getPics().size() == 0){ // empty album; reset dates
@@ -439,7 +528,7 @@ public class SearchController {
      * Redirects user to login page and saves changes to user accounts
      * */
     @FXML
-    public void handleLogoutButton(){
+    private void handleLogoutButton(){
         // current user is no longer admin - redirect to login page
 
         this.stop(); // write all changes
@@ -466,7 +555,7 @@ public class SearchController {
      * Redirects user to album list from single album view
      * */
     @FXML
-    public void handleAlbumListButton(){
+    private void handleAlbumListButton(){
         Parent root;
         Stage stage;
         FXMLLoader loader = new FXMLLoader();

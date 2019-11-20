@@ -99,6 +99,7 @@ public class AdminController {
 
     /**
      * Start method to set up admin UI and data structures
+     * @param primaryStage main UI stage
      * */
     public void start(Stage primaryStage){
         addUserButton.setVisible(false);
@@ -126,7 +127,7 @@ public class AdminController {
     /**
      * Stop method to write admin info to memory
      * */
-    public void stop(){
+    private void stop(){
         // write all accounts to JSON file
         JSONArray outputList = new JSONArray();
 
@@ -150,7 +151,7 @@ public class AdminController {
      * Event handler to create new user
      * */
     @FXML
-    public void handleCreateButton(){
+    private void handleCreateButton(){
         // create new user and write to JSON file
         panelText.setText("Create New User");
 
@@ -166,7 +167,7 @@ public class AdminController {
      * Event handler to delete user
      * */
     @FXML
-    public void handleDeleteButton() throws Exception {
+    private void handleDeleteButton() throws Exception {
         Optional<ButtonType> result = Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to DELETE this user?", "Confirmation Dialog");
 
         if(result.isPresent() && result.get() == ButtonType.OK){
@@ -206,7 +207,7 @@ public class AdminController {
      * Redirects user to login page and saves changes to user accounts
      * */
     @FXML
-    public void handleLogoutButton(){
+    private void handleLogoutButton(){
         // current user is no longer admin - redirect to login page
 
         this.stop(); // write all changes to data.json
@@ -233,7 +234,7 @@ public class AdminController {
      * Adds user to application
      * */
     @FXML
-    public void handleAddUserButton(){
+    private void handleAddUserButton(){
         String username = addUserBox.getText();
 
         // check if it's a duplicate
@@ -268,7 +269,7 @@ public class AdminController {
      * Handles dialog cancel button
      * */
     @FXML
-    public void handleCancelButton() {
+    private void handleCancelButton() {
 
         Optional<ButtonType> result = Utils.handleDialog(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel this action?", "Confirmation");
 
@@ -282,7 +283,7 @@ public class AdminController {
     /**
      * Helper that rebuilds observable list when changes are made in-memory
      * */
-    public void buildObsList(){
+    private void buildObsList(){
         obsList.clear();
         for(String user : accounts){
             obsList.add(user.toString());
@@ -292,7 +293,7 @@ public class AdminController {
     /**
      * Resets UI features to default positions
      * */
-    public void resetUI(){
+    private void resetUI(){
         panelText.setText("Manage Users");
 
         addUserButton.setVisible(false);
@@ -305,8 +306,9 @@ public class AdminController {
 
     /**
      * Checks if user is duplicate
+     * @param username username to be checked
      * */
-    public boolean isDuplicate(String username){
+    private boolean isDuplicate(String username){
         for(String user : accounts){
             if(username.equals(user)){
                 return true;
@@ -318,7 +320,7 @@ public class AdminController {
     /**
      * Loads all user accounts from memory
      * */
-    public void loadAccounts() {
+    private void loadAccounts() {
         JSONParser parser = new JSONParser();
 
         try {
