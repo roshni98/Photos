@@ -228,8 +228,27 @@ public class AlbumListController {
     @FXML
     public void handleSearchButton(){ //directs to search page
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/search.fxml"));
-            rootPane.getChildren().setAll(pane);
+            //VBox pane = FXMLLoader.load(getClass().getResource("../view/search.fxml"));
+            //rootPane.getChildren().setAll(pane);
+            Parent root;
+            Stage stage;
+            FXMLLoader loader = new FXMLLoader();
+            try {
+                saveObject();
+                stage = (Stage) searchButton.getScene().getWindow();
+                loader.setLocation(getClass().getResource("./../view/search.fxml"));
+                root = (Parent) loader.load();
+                SearchController searchController = loader.getController();
+                // passing user object in init
+                //searchController.init(this.u);
+                searchController.start(stage, this.user);
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+                return;
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }catch(Exception e){
             e.printStackTrace();
         }

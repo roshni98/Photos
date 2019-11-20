@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SearchController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <Button layoutX="30.0" layoutY="36.0" mnemonicParsing="false" text="Album List" />
-            <Button layoutX="523.0" layoutY="36.0" mnemonicParsing="false" text="Logout" />
-            <Text layoutX="505.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Logged in: User">
+            <Button fx:id="albumListButton" onAction="#handleAlbumListButton" layoutX="30.0" layoutY="36.0" mnemonicParsing="false" text="&lt; Album List" />
+            <Button fx:id="logoutButton" onAction="#handleLogoutButton" layoutX="523.0" layoutY="36.0" mnemonicParsing="false" text="Logout" />
+            <Button fx:id="createNewAlbumButton" onAction="#handleCreateNewAlbum" layoutX="501.0" layoutY="146.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="125.0" text="Create New Album">
                <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-            <Button layoutX="512.0" layoutY="214.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="92.0" text="Delete Photo" />
-            <Button layoutX="512.0" layoutY="173.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="92.0" text="Move Photo" />
-            <Button layoutX="511.0" layoutY="94.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="92.0" text="Add Photo" />
-            <Button layoutX="511.0" layoutY="135.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="92.0" text="Copy Photo" />
-            <TextField layoutX="30.0" layoutY="281.0" prefHeight="74.0" prefWidth="385.0" promptText="Tag Searching Parameters" />
-            <Button layoutX="442.0" layoutY="281.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="92.0" text="Date Search" />
-            <Button layoutX="442.0" layoutY="318.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="92.0" text="Tag Search" />
+                  <Font size="12.0" />
+               </font></Button>
+            <Button  fx:id="dateSearchButton" onAction="#handleDateSearchButton"  layoutX="253.0" layoutY="282.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="105.0" text="Date Search" />
+            <Button  fx:id="tagSearch2Button" onAction="#handleTagSearch2Button" layoutX="333.0" layoutY="323.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="156.0" text="Tag Search (2 pairs)" />
             <Text layoutX="289.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search">
                <font>
                   <Font size="21.0" />
                </font>
             </Text>
+            <Button  fx:id="tagSearch1Button" onAction="#handleTagSearch1Button" layoutX="133.0" layoutY="323.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="149.0" text="Tag Search (1 pair)" />
+            <TilePane fx:id="tilePane" layoutX="33.0" layoutY="82.0" prefHeight="182.0" prefWidth="459.0" />
       </children>
     </AnchorPane>
   </children>

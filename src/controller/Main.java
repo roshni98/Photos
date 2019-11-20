@@ -20,7 +20,6 @@ public class Main extends Application {
         LoginController controller = loader.getController();
 
         //Album album = new Album("user", "Album 1");
-        //album.getPics().add("ladygaga.jpeg");
         controller.start(primaryStage);
 
         primaryStage.setTitle("Photos");
