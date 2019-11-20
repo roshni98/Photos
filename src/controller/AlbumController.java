@@ -160,6 +160,7 @@ public class AlbumController {
         scroller.setContent(tilePane);
         scroller.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
         // load photos into tilepane
+        tilePane.getChildren().clear();
         setTilePane();
     }
 
@@ -199,7 +200,6 @@ public class AlbumController {
         currPhoto = photo;
         VBox v = new VBox();
         ImageView i = new ImageView();
-        System.out.println(getPhotoImage(photo));
         i.setImage(getPhotoImage(photo));
         i.setFitWidth(40);
         i.setFitHeight(40);
@@ -217,7 +217,7 @@ public class AlbumController {
             setTagListView(photo); // set tags obslist
             tagListView.setItems(this.tags); // set listview to tags obslist
             tagListView.setVisible(true);
-            if(tags.size() > 0){
+            if(this.tags.size() > 0){
                 tagListView.getSelectionModel().select(0);
             }
             // highlight tile
@@ -358,20 +358,17 @@ public class AlbumController {
 
             if(result.isPresent()){
                 caption = textName.getText();
-            }else{
-                caption = "";
+                newPhoto = new Photo(caption, path);
+
+                // add photo to album
+                this.album.getPics().add(newPhoto);
+
+                // add to observable list
+                obsList.add(newPhoto);
+
+                // add photo to tilepane
+                addToTilePane(newPhoto);
             }
-
-            newPhoto = new Photo(caption, path);
-
-            // add photo to album
-            this.album.getPics().add(newPhoto);
-
-            // add to observable list
-            obsList.add(newPhoto);
-            album.getPics().add(newPhoto);
-            // add photo to tilepane
-            addToTilePane(newPhoto);
         }
     }
 
@@ -562,12 +559,14 @@ public class AlbumController {
      * */
     public void setTagListView(Photo photo){
         // load photo tags into observable list
-        this.tags.clear();
-        HashMap<String, ArrayList<String>> photoTags = photo.getTags();
-        if(photoTags != null){
-            for(Map.Entry<String, ArrayList<String>> tagPair: photoTags.entrySet()){
-                for(String tag : tagPair.getValue()){
-                    this.tags.add(tagPair.getKey()+" - "+tag);
+        if(this.tags != null){
+            this.tags.clear();
+            HashMap<String, ArrayList<String>> photoTags = photo.getTags();
+            if(photoTags != null){
+                for(Map.Entry<String, ArrayList<String>> tagPair: photoTags.entrySet()){
+                    for(String tag : tagPair.getValue()){
+                        this.tags.add(tagPair.getKey()+" - "+tag);
+                    }
                 }
             }
         }
@@ -614,10 +613,32 @@ public class AlbumController {
         }
     }
 
+    private void updateAlbumDates(){ // update album min and max dates
+
+        if(this.album.getPics().size() == 0){ // empty album; reset dates
+            this.album.setMin_date(new Date(Long.MIN_VALUE));
+            this.album.setMax_date(new Date(Long.MAX_VALUE));
+            return;
+        }
+
+        Date minDate = this.album.getPics().get(0).getDate();
+        Date maxDate = this.album.getPics().get(0).getDate();
+        for(Photo photo : this.album.getPics()){
+            if(photo.getDate().compareTo(minDate) < 0){
+                minDate = photo.getDate();
+            }else if(photo.getDate().compareTo(maxDate) > 0){
+                maxDate = photo.getDate();
+            }
+        }
+
+        this.album.setMin_date(minDate);
+        this.album.setMax_date(maxDate);
+    }
     /**
      * Serializes user object
      * */
     private void saveObject(){
+        updateAlbumDates();
         updateUserList();
         File file = new File(this.u.getUsername()+".txt");
         if(file.exists()){

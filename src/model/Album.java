@@ -12,6 +12,23 @@ public class Album implements Serializable {
     String user;
     String albumName;
     ArrayList<Photo> pics;
+
+    public Date getMin_date() {
+        return min_date;
+    }
+
+    public void setMin_date(Date min_date) {
+        this.min_date = min_date;
+    }
+
+    public Date getMax_date() {
+        return max_date;
+    }
+
+    public void setMax_date(Date max_date) {
+        this.max_date = max_date;
+    }
+
     Date min_date;
     Date max_date;
 
@@ -25,19 +42,26 @@ public class Album implements Serializable {
         this.max_date = new Date(Long.MIN_VALUE);
     }
 
-
     public String getAlbumName() {
         return albumName;
     }
-    public String getMaxDate() {
+
+    public Date getMaxDate() {
+        return this.max_date;
+    }
+
+    public Date getMinDate() {
+        return this.min_date;
+    }
+
+    public String maxDateToString() {
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
         return df.format(this.max_date);
     }
-    public String getMinDate() {
+    public String minDateToString() {
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
         return df.format(this.min_date);
     }
-
 
     public void setName(String n) {
         //make sure no other album has same name

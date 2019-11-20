@@ -41,7 +41,7 @@ public class Photo implements Serializable{
     }
 
     public Date getDate() {
-        return date;
+        return this.date;
     }
 
     public Date generateDate(){

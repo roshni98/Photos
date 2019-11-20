@@ -142,6 +142,7 @@ public class EditPhotoController {
             root = (Parent) loader.load();
             AlbumController albumController = loader.getController();
             albumController.init(u,albumName);
+            albumController.start(stage);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -168,11 +169,11 @@ public class EditPhotoController {
     }
 
     public void settingDateText(){
-        dateText.setText(photoList.get(selectedIndex).getDate());
+        dateText.setText("Date: "+photoList.get(selectedIndex).getDate().toString());
     }
 
     public void settingCaptionText(){
-        captionText.setText(photoList.get(selectedIndex).getCaption());
+        captionText.setText("Caption: "+photoList.get(selectedIndex).getCaption());
 
     }
 

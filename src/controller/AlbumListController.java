@@ -134,7 +134,7 @@ public class AlbumListController {
         });
         Text albumSizeText = new Text("size:"+a.getPics().size());
         albumSizeText.setStyle("-fx-font-size: 10");
-        Text albumDateRange = new Text(a.getMinDate()+"-"+a.getMaxDate());
+        Text albumDateRange = new Text(a.minDateToString()+"-"+a.maxDateToString());
         albumDateRange.setStyle("-fx-font-size: 10");
         Button deleteButton = new Button();
         deleteButton.setText("delete");
