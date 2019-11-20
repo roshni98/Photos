@@ -115,6 +115,7 @@ public class SearchController {
         ComboBox<String> tagNameComboBox = new ComboBox<>();
         tagNameComboBox.setPromptText("Select tag name");
         tagNameComboBox.getItems().addAll(this.tagNames);
+        tagNameComboBox.setVisibleRowCount(3);
 
         // tag value
         Label tagValLabel = new Label("\nTag Value");
@@ -175,6 +176,7 @@ public class SearchController {
         ComboBox<String> tagNameComboBox = new ComboBox<>();
         tagNameComboBox.setPromptText("Select tag name");
         tagNameComboBox.getItems().addAll(this.tagNames);
+        tagNameComboBox.setVisibleRowCount(3);
 
         // tag value 1
         Label tagValLabel = new Label("\nFirst Tag Value\n");
@@ -196,6 +198,7 @@ public class SearchController {
         ComboBox<String> tagNameComboBox2 = new ComboBox<>();
         tagNameComboBox2.setPromptText("Select tag name");
         tagNameComboBox2.getItems().addAll(this.tagNames);
+        tagNameComboBox2.setVisibleRowCount(3);
 
         // tag value 2
         Label tagValLabel2 = new Label("\nSecond Tag Value");

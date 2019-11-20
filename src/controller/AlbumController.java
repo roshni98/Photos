@@ -140,6 +140,8 @@ public class AlbumController {
     @FXML
     ScrollPane scroller;
 
+    private ArrayList<String> tagNames; // current user's tags
+
     /**
      * Method to initialize controller items
      * */
@@ -154,6 +156,9 @@ public class AlbumController {
 
         // populate obsList
         obsList = FXCollections.observableArrayList(this.album.getPics());
+        tagNames = new ArrayList<>();
+        loadAllTags();
+
         tilePane.setPrefColumns(4);
         scroller.setFitToHeight(true);
         scroller.setFitToWidth(true);
@@ -190,6 +195,25 @@ public class AlbumController {
      * */
     private void stop(){
         saveObject();
+    }
+
+    /**
+     * Load all user tags into a list.
+     * */
+    public void loadAllTags(){
+
+        ArrayList<Album> albumList = (ArrayList) this.u.getAlbumList();
+
+        for(Album album : albumList){ // for each album, go through tags
+            for(Photo photo : album.getPics()){ // for each photo, go through tags
+                for(Map.Entry<String, ArrayList<String>> e : photo.getTags().entrySet()){ // add unique tags to tagNames list
+                    String tagName = e.getKey();
+                    if(!this.tagNames.contains(tagName)){
+                        this.tagNames.add(tagName);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -402,6 +426,7 @@ public class AlbumController {
         // Dropdown of all user's albums
         ComboBox comboBox = new ComboBox();
         comboBox.setPromptText("Select album");
+        comboBox.setVisibleRowCount(3);
         for(Album album : u.getAlbumList()){
             if(!album.getAlbumName().equals(this.album.getAlbumName())){
                 comboBox.getItems().add(album.getAlbumName());
@@ -446,8 +471,8 @@ public class AlbumController {
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.setPromptText("Choose a tag type");
         comboBox.setEditable(true); // user can add their own tag type
-        comboBox.getItems().add("Location");
-        comboBox.getItems().add("Person");
+        comboBox.getItems().addAll(this.tagNames);
+        comboBox.setVisibleRowCount(3);
 
         Label tagValue = new Label("\nTag Value");
         TextField valueField = new TextField();
