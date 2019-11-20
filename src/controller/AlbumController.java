@@ -308,7 +308,7 @@ public class AlbumController {
     private void deletePhoto(Photo photo) {
         // remove from observable list
         obsList.remove(photo);
-
+        album.getPics().remove(photo);
         // reset tilepane
         setTilePane();
 
@@ -365,7 +365,7 @@ public class AlbumController {
 
             // add to observable list
             obsList.add(newPhoto);
-
+            album.getPics().add(newPhoto);
             // add photo to tilepane
             addToTilePane(newPhoto);
         }
@@ -581,11 +581,12 @@ public class AlbumController {
         FXMLLoader loader = new FXMLLoader();
 
         try {
+            saveObject();
             stage = (Stage) logoutButton.getScene().getWindow();
             loader.setLocation(getClass().getResource("../view/editPhoto.fxml"));
             root = (Parent) loader.load();
             EditPhotoController editPhotoController = loader.getController();
-            editPhotoController.init(this.album.getPics(), this.album.getPics().indexOf(currPhoto));
+            editPhotoController.init(this.album.getPics(), this.u, this.album.getAlbumName(), this.album.getPics().indexOf(currPhoto));
             //editPhotoController.start(stage);
             Scene scene = new Scene(root);
             stage.setScene(scene);

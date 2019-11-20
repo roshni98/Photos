@@ -5,6 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -15,7 +17,11 @@ import model.Album;
 import model.Photo;
 
 import javafx.scene.image.ImageView;
+import model.User;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 
@@ -53,20 +59,31 @@ public class EditPhotoController {
     private List<Photo> photoList;
     private ObservableList<Photo> obsList;
     private int selectedIndex;
+    private User u;
+    private String albumName;
+
 //need
 //list of photos in album
 // photo clicked on by index
 
 
-    public void init(ArrayList<Photo> pics, int index) {
+    public void init(ArrayList<Photo> pics, User u, String albumName, int index) {
         this.photoList = pics;
+        this.u = u;
+        this.albumName = albumName;
         this.selectedIndex = index;
-        if(index >= 0  && index < this.photoList.size()){
-            System.out.println("valid path?: "+photoList.get(selectedIndex).getPath());
-            imgView.setImage(new Image(photoList.get(selectedIndex).getPath()));
-            tagList();
-        }
         obsList = FXCollections.observableArrayList(this.photoList);
+        display();
+    }
+
+    public Image getAbsolutePath(String urlp){
+        File directory = new File(urlp);
+        String path = directory.getAbsolutePath();
+        File f = new File(path);
+        if(f.exists()) {
+            return new Image("file:"+f.getAbsolutePath());
+        }
+        return null;
     }
 
     @FXML
@@ -78,39 +95,57 @@ public class EditPhotoController {
         if(selectedIndex > 0  && selectedIndex < this.photoList.size()){
             selectedIndex--;
         }
-        imgView.setImage(new Image(photoList.get(selectedIndex).getPath()));
-        tagList();
+        display();
     }
 
     @FXML
     public void handleNextButton(){
-
+        if(selectedIndex >= 0  && selectedIndex < this.photoList.size()-1){
+            selectedIndex++;
+        }
         if(selectedIndex == photoList.size()-1){
             selectedIndex = 0;
         }
-
-        if(selectedIndex > 0  && selectedIndex < this.photoList.size()){
-            selectedIndex++;
-        }
-        imgView.setImage(new Image(photoList.get(selectedIndex).getPath()));
-        tagList();
+        display();
     }
 
     @FXML
     public void handleLogoutButton(){
+        Parent root;
+        Stage stage;
+        FXMLLoader loader = new FXMLLoader();
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/login.fxml"));
-            rootPane.getChildren().setAll(pane);
-        }catch(Exception e){
+            stage = (Stage) logoutButton.getScene().getWindow();
+            loader.setLocation(getClass().getResource("./../view/login.fxml"));
+            root = (Parent) loader.load();
+            LoginController loginController = loader.getController();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return;
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @FXML
     public void handleAlbumButton(){
+        Parent root;
+        Stage stage;
+        FXMLLoader loader = new FXMLLoader();
+
         try {
-            VBox pane = FXMLLoader.load(getClass().getResource("../view/album.fxml"));
-            rootPane.getChildren().setAll(pane);
+            stage = (Stage) logoutButton.getScene().getWindow();
+            loader.setLocation(getClass().getResource("../view/album.fxml"));
+            root = (Parent) loader.load();
+            AlbumController albumController = loader.getController();
+            albumController.init(u,albumName);
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return;
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -139,6 +174,16 @@ public class EditPhotoController {
     public void settingCaptionText(){
         captionText.setText(photoList.get(selectedIndex).getCaption());
 
+    }
+
+    private void display(){
+        if(selectedIndex >= 0  && selectedIndex < this.photoList.size()){
+            System.out.println("valid path?: "+photoList.get(selectedIndex).getPath());
+            imgView.setImage(getAbsolutePath(photoList.get(selectedIndex).getPath()));
+            tagList();
+            settingCaptionText();
+            settingDateText();
+        }
     }
 
 }

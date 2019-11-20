@@ -43,10 +43,14 @@ public class Photo implements Serializable{
 
     public String getDate(){
         Calendar cal = Calendar.getInstance();
+        if(date == null){
+            return "";
+        }
         cal.setTime(date);
         int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
         int year = cal.get(Calendar.YEAR);
+
         return month + "/" + day + "/" + year;
 
     }
