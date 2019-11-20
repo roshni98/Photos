@@ -66,6 +66,7 @@ public class AlbumListController {
         scroller.setFitToHeight(true);
         scroller.setFitToWidth(true);
         scroller.setContent(displayAlbumTile);
+        scroller.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
         updateTilePane();
     }
 

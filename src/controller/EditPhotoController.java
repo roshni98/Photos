@@ -57,7 +57,6 @@ public class EditPhotoController {
     ListView<String> tagList;
 
     private List<Photo> photoList;
-    private ObservableList<Photo> obsList;
     private int selectedIndex;
     private User u;
     private String albumName;
@@ -72,7 +71,6 @@ public class EditPhotoController {
         this.u = u;
         this.albumName = albumName;
         this.selectedIndex = index;
-        obsList = FXCollections.observableArrayList(this.photoList);
         display();
     }
 
@@ -91,8 +89,7 @@ public class EditPhotoController {
         if(selectedIndex == 0){
             selectedIndex = photoList.size()-1;
         }
-
-        if(selectedIndex > 0  && selectedIndex < this.photoList.size()){
+        else if(selectedIndex > 0  && selectedIndex < this.photoList.size()){
             selectedIndex--;
         }
         display();
@@ -103,7 +100,7 @@ public class EditPhotoController {
         if(selectedIndex >= 0  && selectedIndex < this.photoList.size()-1){
             selectedIndex++;
         }
-        if(selectedIndex == photoList.size()-1){
+        else if(selectedIndex == photoList.size() - 1){
             selectedIndex = 0;
         }
         display();
@@ -179,7 +176,6 @@ public class EditPhotoController {
 
     private void display(){
         if(selectedIndex >= 0  && selectedIndex < this.photoList.size()){
-            System.out.println("valid path?: "+photoList.get(selectedIndex).getPath());
             imgView.setImage(getAbsolutePath(photoList.get(selectedIndex).getPath()));
             tagList();
             settingCaptionText();
