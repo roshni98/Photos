@@ -62,6 +62,7 @@ public class EditPhotoController {
         this.photoList = pics;
         this.selectedIndex = index;
         if(index >= 0  && index < this.photoList.size()){
+            System.out.println("valid path?: "+photoList.get(selectedIndex).getPath());
             imgView.setImage(new Image(photoList.get(selectedIndex).getPath()));
             tagList();
         }

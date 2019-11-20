@@ -29,6 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @class LoginController allows user to login
+ * */
 public class LoginController {
 
     /**
