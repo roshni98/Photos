@@ -61,6 +61,18 @@ public class AlbumListController {
     public void init(User u) {
         this.user = u;
         this.albums = u.getAlbumList();
+        //System.out.println(u.getAlbumList().size());
+        if(u.getUsername().equals("stock")){
+            for(Album a : this.albums){
+                if(a.getAlbumName().equals("stock") && a.getPics().size() < 5){ // if stock photos have not been uploaded
+                    a.getPics().add(new Photo("Lady Gaga", System.getProperty("user.dir")+"/ladygaga.jpg"));
+                    a.getPics().add(new Photo("One Direction", System.getProperty("user.dir")+"/direction.png"));
+                    a.getPics().add(new Photo("Taylor Swift", System.getProperty("user.dir")+"/swift.png"));
+                    a.getPics().add(new Photo("Beyonce", System.getProperty("user.dir")+"/beyonce.jpg"));
+                    a.getPics().add(new Photo("Jay-Z", System.getProperty("user.dir")+"/jayz.jpg"));
+                }
+            }
+        }
         obsList = FXCollections.observableArrayList(u.getAlbumList());
         displayAlbumTile.setPrefColumns(4);
         scroller.setFitToHeight(true);
@@ -88,7 +100,7 @@ public class AlbumListController {
 
     //load's folder icon
     private Image albumFolderImage(){
-        String folderImgFilePath= "/src/model/folder.png";
+        String folderImgFilePath= "/folder.png";
         File directory = new File("./");
         String path = directory.getAbsolutePath().substring(0,directory.getAbsolutePath().length()-1)+folderImgFilePath;
         File f = new File(path);

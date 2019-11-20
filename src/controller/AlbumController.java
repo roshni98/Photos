@@ -224,6 +224,7 @@ public class AlbumController {
         currPhoto = photo;
         VBox v = new VBox();
         ImageView i = new ImageView();
+        System.out.println(getPhotoImage(photo) == null);
         i.setImage(getPhotoImage(photo));
         i.setFitWidth(40);
         i.setFitHeight(40);
@@ -274,6 +275,7 @@ public class AlbumController {
      * @return Image object created from given Photo objet
      * */
     private Image getPhotoImage(Photo photo){
+        System.out.println("path: "+photo.getPath());
         File f = new File(photo.getPath());
         if(f.exists()) {
             return new Image("file:"+f.getAbsolutePath());
