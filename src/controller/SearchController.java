@@ -31,7 +31,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 /**
- * @class SearchController allows user to search all their photos using different parameters
+ * SearchController allows user to search all their photos using different parameters
  * */
 public class SearchController {
 
@@ -388,6 +388,12 @@ public class SearchController {
             LocalDate beg = startDate.getValue();
             LocalDate end = endDate.getValue();
 
+            // error popup if either field is empty
+            if(beg == null || end == null){
+                Utils.handleDialog(Alert.AlertType.ERROR, "Fields must not be left empty. Please try again.", "One or more fields empty.");
+                return;
+            }
+
             Date date1 = Date.from(beg.atStartOfDay(ZoneId.systemDefault()).toInstant());
             Date date2 = Date.from(end.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
@@ -495,6 +501,8 @@ public class SearchController {
 
             // add album to user's albums
             user.getAlbumList().add(newAlbum);
+
+            Utils.handleDialog(Alert.AlertType.CONFIRMATION, "New album \""+newAlbum.getAlbumName()+"\" successfully created", "Confirmation Dialog");
         }
     }
 

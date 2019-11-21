@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @class LoginController allows user to login
+ * LoginController allows user to login
  * */
 public class LoginController {
 
@@ -61,7 +61,7 @@ public class LoginController {
      * Start method to set up login UI and data structures
      * @param primaryStage main UI stage
      * */
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage){
 
         userObjectList = new ArrayList<>();
         /*primaryStage.setOnCloseRequest(event -> {
@@ -124,6 +124,7 @@ public class LoginController {
 
                     // passing user object in init
                     albumListController.init(userObject);
+                    albumListController.start(stage);
                     Scene scene = new Scene(root);
                     stage.setScene(scene);
                     stage.show();

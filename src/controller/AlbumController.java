@@ -27,7 +27,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * @class AlbumController allows user to view one of their albums and make changes to the photos inside
+ * AlbumController allows user to view one of their albums and make changes to the photos inside
  * */
 public class AlbumController {
 
@@ -421,6 +421,12 @@ public class AlbumController {
      * */
     @FXML
     private void handleCopyPhotoButton(){
+
+        if(u.getAlbumList().size() == 1){
+            Utils.handleDialog(Alert.AlertType.ERROR, "No other albums exist to copy photo to.", "No other albums exist");
+            return;
+        }
+
         changePhotoLoc(false);
     }
 
@@ -429,6 +435,12 @@ public class AlbumController {
      * */
     @FXML
     private void handleMovePhotoButton(){
+
+        if(u.getAlbumList().size() == 1){
+            Utils.handleDialog(Alert.AlertType.ERROR, "No other albums exist to move photo to.", "No other albums exist");
+            return;
+        }
+
         changePhotoLoc(true);
     }
 
@@ -641,8 +653,6 @@ public class AlbumController {
 
         if(result.isPresent() && result.get() == ButtonType.OK){
 
-            //System.out.println(tagIndex);
-
             String[] pair = tags.get(tagIndex).split(" - ");
 
             // key-value pair to be deleted
@@ -720,7 +730,6 @@ public class AlbumController {
             root = (Parent) loader.load();
             EditPhotoController editPhotoController = loader.getController();
             editPhotoController.init(this.album.getPics(), this.u, this.album.getAlbumName(), this.album.getPics().indexOf(currPhoto));
-            //editPhotoController.start(stage);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();

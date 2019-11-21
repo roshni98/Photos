@@ -1,3 +1,6 @@
+/**
+ * @author Amulya Mummaneni
+ * */
 package controller;
 
 import javafx.fxml.FXML;
@@ -28,6 +31,7 @@ public class Utils {
      * @param alertType type of alert (e.g. error, warning, etc)
      * @param  contextText Message to be displayed in dialog
      * @param title Title of dialog box
+     * @return dialog box
      * */
     @FXML
     public static Optional<ButtonType> handleDialog(Alert.AlertType alertType, String contextText, String title) {
@@ -37,6 +41,10 @@ public class Utils {
         return errorAlert.showAndWait();
     }
 
+    /**
+     * Updates album's date range
+     * @param a album to be updated
+     * */
     public static void updateAlbumDates(Album a){ // update album min and max dates
 
         if(a.getPics().size() == 0){ // empty album; reset dates

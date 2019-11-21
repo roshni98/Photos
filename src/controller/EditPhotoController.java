@@ -28,7 +28,7 @@ import java.io.ObjectOutputStream;
 import java.util.*;
 
 /**
- * @class EditPhotoController Allows user to view one photo at a time and scroll through an album
+ * EditPhotoController Allows user to view one photo at a time and scroll through an album
  * */
 public class EditPhotoController {
 

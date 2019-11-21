@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @class AlbumListController Displays list of albums and allows user to edit them
+ * AlbumListController Displays list of albums and allows user to edit them
  * */
 public class AlbumListController {
 
@@ -176,6 +176,7 @@ public class AlbumListController {
         for(int i=0;i<obsList.size();i++){
            if(a.getAlbumName().equals(obsList.get(i).getAlbumName())){
                obsList.remove(i);
+               this.user.getAlbumList().remove(a);
                displayAlbumTile.getChildren().remove(i);
             }
         }
@@ -322,7 +323,6 @@ public class AlbumListController {
                 root = (Parent) loader.load();
                 SearchController searchController = loader.getController();
                 // passing user object in init
-                //searchController.init(this.u);
                 searchController.start(stage, this.user);
                 Scene scene = new Scene(root);
                 stage.setScene(scene);

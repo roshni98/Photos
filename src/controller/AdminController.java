@@ -29,7 +29,7 @@ import java.util.Optional;
 import controller.Utils;
 
 /**
- * @class AdminController allows admin access to admin subsystem
+ * AdminController allows admin access to admin subsystem
  * */
 public class AdminController {
 
